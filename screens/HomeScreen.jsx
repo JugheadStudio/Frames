@@ -1,10 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
+import { useTheme } from '../ThemeProvider';
+import GlobalText from '../components/GlobalText';
 
-function HomeScreen({ navigation }){
+function HomeScreen(){
+  const theme = useTheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
+    <View>
+      <GlobalText style={theme.typography.heading}>Heading test</GlobalText>
+      <GlobalText style={theme.typography.body}>Body Text</GlobalText>
     </View>
   )
 }
@@ -16,7 +21,6 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "#151718"
   },
   title: {
       fontSize: 20,
