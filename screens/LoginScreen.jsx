@@ -29,6 +29,13 @@ const BACKGROUND_SVG = `
 </svg>
 `;
 
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
+
+const apiKey = process.env.FIREBASE_API_KEY;
+
 function LoginScreen() {
   
   const [textEmail, setTextEmail] = useState('');
@@ -52,6 +59,9 @@ function LoginScreen() {
     setTextEmail('');
     setTextPassword('');
   };
+
+console.log(apiKey);
+
 
   return (
     <View style={styles.container}>
@@ -129,12 +139,16 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     marginBottom: 10,
-    color: '#B9B8B6'
+    color: '#B9B8B6',
+    width: '100%',
+    textAlign: 'left'
   },
   forgotPassword: {
     fontSize: 12,
     marginBottom: 25,
-    color: '#B9B8B6'
+    color: '#B9B8B6',
+    width: '100%',
+    textAlign: 'left'
   },
   textField: {
     borderColor: '#8C8C8C',

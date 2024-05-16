@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -39,10 +40,40 @@ const Stack = createStackNavigator();
 
 function HomeTabs() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'My home' }}/>
-      <Tab.Screen name="Development" component={DevelopmentScreen}/>
+    <Tab.Navigator screenOptions={({ route }) => ({
+      headerStyle: {
+        backgroundColor: 'transparent',
+      },
+      headerTitleStyle: {
+        fontFamily: 'Montserrat_500Medium',
+      },
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === 'Home') {
+          iconName = focused ? 'home-outline' : 'home-outline';
+        } else if (route.name === 'Development') {
+          iconName = focused ? 'code-outline' : 'code-outline';
+        }
+
+        // You can return any component that you like here!
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+      tabBarActiveTintColor: MyTheme.colors.iconActive,
+      tabBarInactiveTintColor: MyTheme.colors.iconDefault,
+    })}>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Development" component={DevelopmentScreen} />
     </Tab.Navigator>
+  );
+}
+
+function AuthStackNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
   );
 }
 
@@ -64,6 +95,9 @@ const MyTheme = {
 };
 
 export default function App() {
+
+  const [isLoggedIn, setisLoggedIn] = useState(false);
+
 
   let [fontsLoaded] = useFonts({
     Montserrat_100Thin,
@@ -90,43 +124,44 @@ export default function App() {
     return <AppLoading />;
   } else {
     return (
-  
+
       <ThemeProvider>
         <NavigationContainer theme={MyTheme}>
+          {!isLoggedIn ? (
+            <Stack.Navigator>
+              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+            </Stack.Navigator>
+          ) : (
+            <Tab.Navigator screenOptions={({ route }) => ({
+              headerStyle: {
+                backgroundColor: 'transparent',
+              },
+              headerTitleStyle: {
+                fontFamily: 'Montserrat_500Medium',
+              },
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
 
-          <Stack.Navigator initialRouteName="Login"
-          screenOptions={({ route }) => ({
-            headerStyle: {
-              backgroundColor: 'transparent',
-            },
-            headerTitleStyle: {
-              fontFamily: 'Montserrat_500Medium',
-            },
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
-              
-              if (route.name === 'Home') {
-                iconName = focused ? 'home-outline' : 'home-outline';
-              } else if (route.name === 'Development') {
-                iconName = focused ? 'code-outline' : 'code-outline';
-              } 
-              
-              // You can return any component that you like here!
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-            tabBarActiveTintColor: MyTheme.colors.iconActive,
-            tabBarInactiveTintColor: MyTheme.colors.iconDefault,
-            tabBarVisible: route.name !== 'AuthStackNavigator',
-          })}>
+                if (route.name === 'Home') {
+                  iconName = focused ? 'home-outline' : 'home-outline';
+                } else if (route.name === 'Development') {
+                  iconName = focused ? 'code-outline' : 'code-outline';
+                }
 
-            <Stack.Screen name="Home" component={HomeTabs} />
-            <Tab.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-            <Tab.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-          </Stack.Navigator>
-
+                // You can return any component that you like here!
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+              tabBarActiveTintColor: MyTheme.colors.iconActive,
+              tabBarInactiveTintColor: MyTheme.colors.iconDefault,
+            })}>
+              <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+              <Tab.Screen name="Development" component={DevelopmentScreen} />
+            </Tab.Navigator>
+          )}
         </NavigationContainer>
       </ThemeProvider>
-  
+
     );
   }
 }
