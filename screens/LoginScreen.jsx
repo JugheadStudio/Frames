@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import { StyleSheet, View, TextInput } from 'react-native'
+import { StyleSheet, View, TextInput, SafeAreaView } from 'react-native'
 import { SvgXml } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
+import {handleLogin} from '../services/authService'
 
 import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
@@ -29,17 +30,10 @@ const BACKGROUND_SVG = `
 </svg>
 `;
 
-import dotenv from 'dotenv';
-
-// Load environment variables from .env file
-dotenv.config();
-
-const apiKey = process.env.FIREBASE_API_KEY;
-
 function LoginScreen() {
   
-  const [textEmail, setTextEmail] = useState('');
-  const [textPassword, setTextPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   
   const [isActiveEmail, setActiveEmail] = useState(false);
   const [isActivePassword, setActivePassword] = useState(false);
@@ -47,59 +41,57 @@ function LoginScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
 
-  const navigateToHome = () => {
-    navigation.navigate('Home');
-    setTextEmail('');
-    setTextPassword('');
-    setActivePassword('');
-  };
+  const login = () => {
+    handleLogin(email, password);
+    setEmail('');
+    setPassword('');
+  }
 
   const navigateToRegister = () => {
     navigation.navigate('Register');
-    setTextEmail('');
-    setTextPassword('');
+    setEmail('');
+    setPassword('');
   };
 
-console.log(apiKey);
-
-
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.wrapper}>
+      <View style={styles.container}>
 
-      <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
+        <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
 
-      <View style={styles.content}>
-        <SvgXml xml={LOGO_SVG}/>
+        <View style={styles.content}>
+          <SvgXml xml={LOGO_SVG}/>
 
-        <GlobalText style={styles.title}>LOGIN</GlobalText>
+          <GlobalText style={styles.title}>LOGIN</GlobalText>
 
-        <GlobalText style={styles.label}>Email</GlobalText>
+          <GlobalText style={styles.label}>Email</GlobalText>
 
-        <TextInput
-          style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20] } onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
-          placeholder="Email"
-          placeholderTextColor="#848484"
-          onChangeText={newText => setTextEmail(newText)}
-          defaultValue={textEmail}
-        />
+          <TextInput
+            style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20] } onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
+            placeholder="Email"
+            placeholderTextColor="#848484"
+            onChangeText={newText => setEmail(newText)}
+            defaultValue={email}
+          />
 
-        <GlobalText style={styles.label}>Password</GlobalText>
+          <GlobalText style={styles.label}>Password</GlobalText>
 
-        <TextInput
-          style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb10] } onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
-          placeholder="Password"
-          placeholderTextColor="#848484"
-          onChangeText={newText => setTextPassword(newText)}
-          defaultValue={textPassword}
-          secureTextEntry={true}
-        />
-        <GlobalText style={styles.forgotPassword}>Forgot Password</GlobalText>
+          <TextInput
+            style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb10] } onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
+            placeholder="Password"
+            placeholderTextColor="#848484"
+            onChangeText={newText => setPassword(newText)}
+            defaultValue={password}
+            secureTextEntry={true}
+          />
+          <GlobalText style={styles.forgotPassword}>Forgot Password</GlobalText>
 
-        <GlobalButton className="primary" buttonText="Login" onPress={navigateToHome} style={styles.mb20} />
-        <GlobalButton className="secondary" buttonText="Register" onPress={navigateToRegister} />
+          <GlobalButton className="primary" buttonText="Login"  onPress={login} style={styles.mb20} />
+          <GlobalButton className="secondary" buttonText="Register" onPress={navigateToRegister} />
+        </View>
+
       </View>
-
-    </View>
+    </SafeAreaView>
 
   )
 }
@@ -112,6 +104,9 @@ const styles = StyleSheet.create({
   },
   mb20: {
     marginBottom: 20
+  },
+  wrapper: {
+    flex: 1,
   },
   container: {
     flex: 1,
@@ -126,7 +121,7 @@ const styles = StyleSheet.create({
   },
   backgroundLogo: {
     position: 'absolute',
-    top: -50,
+    top: 50,
     left: -75,
     bottom: 0,
     zIndex: -1,

@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import { StyleSheet, View, TextInput, ScrollView } from 'react-native'
+import { StyleSheet, View, TextInput, ScrollView, SafeAreaView } from 'react-native'
 import { SvgXml } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
+import {handleRegister} from '../services/authService'
 
 import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
@@ -31,9 +32,9 @@ const BACKGROUND_SVG = `
 
 function LoginScreen() {
   
-  const [textUsername, setTextUsername] = useState('');
-  const [textEmail, setTextEmail] = useState('');
-  const [textPassword, setTextPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const [isActiveName, setActiveName] = useState(false);
   const [isActiveEmail, setActiveEmail] = useState(false);
@@ -42,69 +43,70 @@ function LoginScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
 
-  const navigateToHome = () => {
-    navigation.navigate('Home');
-    setTextUsername('');
-    setTextEmail('');
-    setTextPassword('');
-  };
-
   const navigateToLogin = () => {
     navigation.navigate('Login');
-    setTextUsername('');
-    setTextEmail('');
-    setTextPassword('');
+    setUsername('');
+    setEmail('');
+    setPassword('');
   };
 
+  const register = () => {
+    handleRegister(email, password);
+    setUsername('');
+    setEmail('');
+    setPassword('');
+  }
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.wrapper}>
+      <View style={styles.container}>
 
-      <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
+        <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
 
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-        <View style={styles.content}>
-          <SvgXml xml={LOGO_SVG}/>
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+          <View style={styles.content}>
+            <SvgXml xml={LOGO_SVG}/>
 
-          <GlobalText style={styles.title}>REGISTER</GlobalText>
+            <GlobalText style={styles.title}>REGISTER</GlobalText>
 
-          <GlobalText style={styles.label}>Username</GlobalText>
+            <GlobalText style={styles.label}>Username</GlobalText>
 
-          <TextInput
-            style={[isActiveName ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveName(true)} onBlur={() => setActiveName(false)}
-            placeholder="Name"
-            placeholderTextColor="#848484"
-            onChangeText={newText => setTextUsername(newText)}
-            defaultValue={textUsername}
-          />
+            <TextInput
+              style={[isActiveName ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveName(true)} onBlur={() => setActiveName(false)}
+              placeholder="Name"
+              placeholderTextColor="#848484"
+              onChangeText={newText => setUsername(newText)}
+              defaultValue={username}
+            />
 
-          <GlobalText style={styles.label}>Email</GlobalText>
+            <GlobalText style={styles.label}>Email</GlobalText>
 
-          <TextInput
-            style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
-            placeholder="Email"
-            placeholderTextColor="#848484"
-            onChangeText={newText => setTextEmail(newText)}
-            defaultValue={textEmail}
-          />
+            <TextInput
+              style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
+              placeholder="Email"
+              placeholderTextColor="#848484"
+              onChangeText={newText => setEmail(newText)}
+              defaultValue={email}
+            />
 
-          <GlobalText style={styles.label}>Password</GlobalText>
+            <GlobalText style={styles.label}>Password</GlobalText>
 
-          <TextInput
-            style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb30]} onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
-            placeholder="Password"
-            placeholderTextColor="#848484"
-            onChangeText={newText => setTextPassword(newText)}
-            defaultValue={textPassword}
-            secureTextEntry={true}
-          />
+            <TextInput
+              style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb30]} onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
+              placeholder="Password"
+              placeholderTextColor="#848484"
+              onChangeText={newText => setPassword(newText)}
+              defaultValue={password}
+              secureTextEntry={true}
+            />
 
-          <GlobalButton className="primary" buttonText="Register" style={{ marginBottom: 20 }} onPress={navigateToHome} />
-          <GlobalButton className="secondary" buttonText="Already a User" style={{ marginBottom: 80 }} onPress={navigateToLogin}/>
-        </View>
-      </ScrollView>
+            <GlobalButton className="primary" buttonText="Register" style={{ marginBottom: 20 }} onPress={register} />
+            <GlobalButton className="secondary" buttonText="Already a User" style={{ marginBottom: 80 }} onPress={navigateToLogin}/>
+          </View>
+        </ScrollView>
 
-    </View>
-
+      </View>
+    </SafeAreaView>
   )
 }
 
@@ -121,6 +123,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
   },
+  wrapper: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     position: 'relative',
@@ -134,7 +139,7 @@ const styles = StyleSheet.create({
   },
   backgroundLogo: {
     position: 'absolute',
-    top: -50,
+    top: 50,
     left: -75,
     bottom: 0,
     zIndex: -1,
@@ -148,7 +153,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#ECEDEE",
     marginBottom: 10,
-    color: '#B9B8B6'
+    color: '#B9B8B6',
+    width: '100%',
+    textAlign: 'left'
   },
   textField: {
     borderColor: '#8C8C8C',

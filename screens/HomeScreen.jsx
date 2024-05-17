@@ -1,30 +1,74 @@
-import { StyleSheet, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, View, Text, ScrollView, SafeAreaView  } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
 
+import {handleSignOut} from '../services/authService';
+import { auth } from '../config/firebase';
+
 function HomeScreen(){
+  
+  const [userEmail, setUserEmail] = useState(null);
+
   const theme = useTheme();
+  
+  const handleLogout = () => {
+    handleSignOut()
+  }
+
+  const fetchUserEmail = () => {
+    const user = auth.currentUser; // Get the current user
+    if (user) {
+        setUserEmail(user.email); // Set user email in state
+    }
+  }
+
+  useEffect(() => {
+    fetchUserEmail();
+  }, []);
 
   return (
-    <View>
-      <GlobalText style={theme.typography.heading}>Heading test</GlobalText>
-      <GlobalText style={theme.typography.body}>Body Text</GlobalText>
-    </View>
+    <SafeAreaView style={styles.wrapper}>
+      <View style={styles.container}>
+
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+
+          <View style={styles.content}>
+            <GlobalText>Home</GlobalText>
+          </View>
+          
+        </ScrollView>
+
+      </View>
+    </SafeAreaView>
   )
 }
 
 export default HomeScreen
 
 const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+  mb20: {
+    marginBottom: 20
   },
-  title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: "#ECEDEE"
-  }
+  mb30: {
+    marginBottom: 30
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  wrapper: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  content: {
+    flex: 1,
+    marginTop: 150,
+    alignItems: 'center',
+    paddingHorizontal: 25,
+    position: 'relative',
+  },
 })

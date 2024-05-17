@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AppLoading from 'expo-app-loading';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './config/firebase';
 
 import { ThemeProvider } from './ThemeProvider';
 
@@ -31,51 +33,12 @@ import {
 } from '@expo-google-fonts/montserrat';
 
 import HomeScreen from './screens/HomeScreen';
-import DevelopmentScreen from './screens/DevelopmentScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import LoginScreen from './screens/LoginScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
-function HomeTabs() {
-  return (
-    <Tab.Navigator screenOptions={({ route }) => ({
-      headerStyle: {
-        backgroundColor: 'transparent',
-      },
-      headerTitleStyle: {
-        fontFamily: 'Montserrat_500Medium',
-      },
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
-
-        if (route.name === 'Home') {
-          iconName = focused ? 'home-outline' : 'home-outline';
-        } else if (route.name === 'Development') {
-          iconName = focused ? 'code-outline' : 'code-outline';
-        }
-
-        // You can return any component that you like here!
-        return <Ionicons name={iconName} size={size} color={color} />;
-      },
-      tabBarActiveTintColor: MyTheme.colors.iconActive,
-      tabBarInactiveTintColor: MyTheme.colors.iconDefault,
-    })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Development" component={DevelopmentScreen} />
-    </Tab.Navigator>
-  );
-}
-
-function AuthStackNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-    </Stack.Navigator>
-  );
-}
 
 const MyTheme = {
   dark: true,
@@ -96,7 +59,20 @@ const MyTheme = {
 
 export default function App() {
 
-  const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsLoggedIn(true)
+        console.log('User logged in - ' + user.email);
+      } else {
+        setIsLoggedIn(false)
+        console.log('No user loggged in');
+      }
+    })
+    return unsubscribe
+  }, [])
 
 
   let [fontsLoaded] = useFonts({
@@ -144,9 +120,9 @@ export default function App() {
                 let iconName;
 
                 if (route.name === 'Home') {
-                  iconName = focused ? 'home-outline' : 'home-outline';
-                } else if (route.name === 'Development') {
-                  iconName = focused ? 'code-outline' : 'code-outline';
+                  iconName = focused ? 'home' : 'home-outline';
+                } else if (route.name === 'Profile') {
+                  iconName = focused ? 'person' : 'person-outline';
                 }
 
                 // You can return any component that you like here!
@@ -156,7 +132,7 @@ export default function App() {
               tabBarInactiveTintColor: MyTheme.colors.iconDefault,
             })}>
               <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-              <Tab.Screen name="Development" component={DevelopmentScreen} />
+              <Tab.Screen name="Profile" component={ProfileScreen} />
             </Tab.Navigator>
           )}
         </NavigationContainer>
