@@ -27,7 +27,7 @@ const primaryStyles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontFamily: 'Montserrat-Light',
+    fontFamily: 'Montserrat-Regular',
     fontSize: 20,
     color: '#F0F0F0',
   },
@@ -42,7 +42,7 @@ const secondaryStyles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontFamily: 'Montserrat-Light',
+    fontFamily: 'Montserrat-Regular',
     fontSize: 20,
     color: '#F0F0F0',
   },

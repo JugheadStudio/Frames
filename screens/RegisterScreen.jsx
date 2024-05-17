@@ -45,9 +45,6 @@ function LoginScreen() {
 
   const navigateToLogin = () => {
     navigation.navigate('Login');
-    setUsername('');
-    setEmail('');
-    setPassword('');
   };
 
   const register = () => {

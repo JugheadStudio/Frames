@@ -10,6 +10,14 @@ import { auth } from './config/firebase';
 
 import { ThemeProvider } from './ThemeProvider';
 
+// Screens ----------------------------------
+import HomeScreen from './screens/HomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import NotificationScreen from './screens/NotificationScreen';
+import NewEntryScreen from './screens/NewEntryScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import LoginScreen from './screens/LoginScreen';
+
 import {
   useFonts,
   Montserrat_100Thin,
@@ -31,11 +39,6 @@ import {
   Montserrat_800ExtraBold_Italic,
   Montserrat_900Black_Italic,
 } from '@expo-google-fonts/montserrat';
-
-import HomeScreen from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import LoginScreen from './screens/LoginScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -73,7 +76,6 @@ export default function App() {
     })
     return unsubscribe
   }, [])
-
 
   let [fontsLoaded] = useFonts({
     Montserrat_100Thin,
@@ -123,6 +125,8 @@ export default function App() {
                   iconName = focused ? 'home' : 'home-outline';
                 } else if (route.name === 'Profile') {
                   iconName = focused ? 'person' : 'person-outline';
+                } else if (route.name === 'Add') {
+                  iconName = focused ? 'add-circle' : 'add-circle';
                 }
 
                 // You can return any component that you like here!
@@ -132,7 +136,8 @@ export default function App() {
               tabBarInactiveTintColor: MyTheme.colors.iconDefault,
             })}>
               <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-              <Tab.Screen name="Profile" component={ProfileScreen} />
+              <Tab.Screen name="Add" component={NewEntryScreen} options={{ headerShown: false }} />
+              <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
             </Tab.Navigator>
           )}
         </NavigationContainer>

@@ -1,13 +1,14 @@
 // theme.js
 const theme = {
   colors: {
-    primary: '#007bff',
+    primary: '#906447',
     secondary: '#fff',
-    // other colors...
+    text1: '#F0F0F0',
+    text2: '#878787',
   },
   typography: {
     fontSize: 16,
-    fontFamily: 'Roboto',
+    fontFamily: 'Montserrat_400Regular',
     heading: {
       fontSize: 24,
       fontFamily: 'Montserrat_200ExtraLight',
@@ -16,28 +17,17 @@ const theme = {
       fontSize: 16,
     },
   },
-};
+  font: {
+    font100: 'Montserrat_100Thin',
+    font200: 'Montserrat_200ExtraLight',
+    font300: 'Montserrat_300Light',
+    font400: 'Montserrat_400Regular',
+    font500: 'Montserrat_500Medium',
+    font600: 'Montserrat_600SemiBold',
+    font700: 'Montserrat_700Bold',
+    font800: 'Montserrat_800ExtraBold',
+    font900: 'Montserrat_900Black',
+  },
+}
 
 export default theme;
-
-// const tintColorLight = '#0a7ea4';
-// const tintColorDark = '#fff';
-
-// export const Colors = {
-//   light: {
-//     text: '#11181C',
-//     background: '#fff',
-//     tint: tintColorLight,
-//     icon: '#687076',
-//     tabIconDefault: '#687076',
-//     tabIconSelected: tintColorLight,
-//   },
-//   dark: {
-//     text: '#ECEDEE',
-//     background: '#151718',
-//     tint: tintColorDark,
-//     icon: '#9BA1A6',
-//     tabIconDefault: '#9BA1A6',
-//     tabIconSelected: tintColorDark,
-//   },
-// };

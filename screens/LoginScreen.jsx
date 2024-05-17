@@ -43,8 +43,6 @@ function LoginScreen() {
 
   const login = () => {
     handleLogin(email, password);
-    setEmail('');
-    setPassword('');
   }
 
   const navigateToRegister = () => {
