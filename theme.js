@@ -9,13 +9,6 @@ const theme = {
   typography: {
     fontSize: 16,
     fontFamily: 'Montserrat_400Regular',
-    heading: {
-      fontSize: 24,
-      fontFamily: 'Montserrat_200ExtraLight',
-    },
-    body: {
-      fontSize: 16,
-    },
   },
   font: {
     font100: 'Montserrat_100Thin',

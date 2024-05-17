@@ -1,8 +1,7 @@
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, Image } from 'react-native'
+import { StyleSheet, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {handleSignOut} from '../services/authService';
 import { auth } from '../config/firebase';
 import theme from '../theme';
 
@@ -14,9 +13,9 @@ function EntryCard(){
   const [userEmail, setUserEmail] = useState(null);
 
   const fetchUserEmail = () => {
-    const user = auth.currentUser; // Get the current user
+    const user = auth.currentUser;
     if (user) {
-        setUserEmail(user.email); // Set user email in state
+        setUserEmail(user.email);
     }
   }
 

@@ -1,6 +1,5 @@
 import { StyleSheet, View, Text, ScrollView, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useTheme } from '../ThemeProvider';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SvgXml } from 'react-native-svg';
 
@@ -53,10 +52,6 @@ const LOGO_SVG = `
 function HomeScreen(){
   
   const [userEmail, setUserEmail] = useState(null);
-  
-  const handleLogout = () => {
-    handleSignOut()
-  }
 
   const fetchUserEmail = () => {
     const user = auth.currentUser; // Get the current user
@@ -93,24 +88,6 @@ function HomeScreen(){
   return (
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.container}>
-        <View style={[styles.dflex, styles.justifyContentBetween, styles.logoBar]}>
-          <View>
-            <SvgXml xml={LOGO_SVG}/>
-          </View>
-          <View>
-            <Ionicons name={'notifications-outline'} size={25} color={'white'} />
-          </View>
-        </View>
-
-        <View style={[styles.dflex, styles.topTabs]}>
-          <View style={[styles.topTabButton, styles.topTabButtonActive]}>
-            <GlobalText style={[styles.topTabButtonText, styles.topTabButtonTextActive]}>Entries</GlobalText>
-          </View>
-
-          <View style={[styles.topTabButton]}>
-            <GlobalText style={[styles.topTabButtonText]}>Info</GlobalText>
-          </View>
-        </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
@@ -176,7 +153,7 @@ const styles = StyleSheet.create({
   },
   topTabButtonActive: {
     borderBottomColor: theme.colors.primary,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
   },
   topTabButtonText: {
     fontSize: 18,

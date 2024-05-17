@@ -47,12 +47,6 @@ function NewEntryScreen(){
 export default NewEntryScreen
 
 const styles = StyleSheet.create({
-  mb20: {
-    marginBottom: 20
-  },
-  mb30: {
-    marginBottom: 30
-  },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',

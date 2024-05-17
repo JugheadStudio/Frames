@@ -1,12 +1,15 @@
 import { StyleSheet, View, Text, ScrollView, SafeAreaView  } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useTheme } from '../ThemeProvider';
-import GlobalText from '../components/GlobalText';
 
 import {handleSignOut} from '../services/authService';
 import { auth } from '../config/firebase';
 
-function ProfileScreen(){
+// Components
+import { useTheme } from '../ThemeProvider';
+import GlobalText from '../components/GlobalText';
+import GlobalButton from '../components/GlobalButton';
+
+function SettingsScreen(){
   
   const [userEmail, setUserEmail] = useState(null);
 
@@ -34,7 +37,8 @@ function ProfileScreen(){
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
           <View style={styles.content}>
-            <GlobalText>My Profile</GlobalText>
+            <GlobalText>Settings</GlobalText>
+            <GlobalButton className="secondary" buttonText="Sign Out" onPress={handleLogout} />
           </View>
 
         </ScrollView>
@@ -44,7 +48,7 @@ function ProfileScreen(){
   )
 }
 
-export default ProfileScreen
+export default SettingsScreen
 
 const styles = StyleSheet.create({
   scrollContainer: {

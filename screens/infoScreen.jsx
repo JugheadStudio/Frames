@@ -6,7 +6,7 @@ import GlobalText from '../components/GlobalText';
 import {handleSignOut} from '../services/authService';
 import { auth } from '../config/firebase';
 
-function ProfileScreen(){
+function InfoScreen(){
   
   const [userEmail, setUserEmail] = useState(null);
 
@@ -34,7 +34,7 @@ function ProfileScreen(){
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
           <View style={styles.content}>
-            <GlobalText>My Profile</GlobalText>
+            <GlobalText>Info</GlobalText>
           </View>
 
         </ScrollView>
@@ -44,9 +44,15 @@ function ProfileScreen(){
   )
 }
 
-export default ProfileScreen
+export default InfoScreen
 
 const styles = StyleSheet.create({
+  mb20: {
+    marginBottom: 20
+  },
+  mb30: {
+    marginBottom: 30
+  },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
