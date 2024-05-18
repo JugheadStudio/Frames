@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, SafeAreaView, View, TouchableOpacity } from 'react-native'
+import AppLoading from 'expo-app-loading';
+
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './config/firebase';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AppLoading from 'expo-app-loading';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './config/firebase';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ThemeProvider } from './ThemeProvider';
 import { SvgXml } from 'react-native-svg';
 
 // Screens ----------------------------------
 import NotificationScreen from './screens/NotificationScreen';
 import NewEntryScreen from './screens/NewEntryScreen';
+import SearchScreen from './screens/searchScreen';
 
 import RegisterScreen from './screens/RegisterScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -66,6 +69,7 @@ const LOGO_SVG = `
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const TopTab = createMaterialTopTabNavigator();
 
 const MyTheme = {
   dark: true,
@@ -84,8 +88,6 @@ const MyTheme = {
   },
 };
 
-const TopTab = createMaterialTopTabNavigator();
-
 function HomeTopTabs() {
   return (
     <TopTab.Navigator
@@ -99,7 +101,6 @@ function HomeTopTabs() {
         textTransform: 'capitalize' 
       },
       tabBarStyle: { 
-        // backgroundColor: '#040404',
         backgroundColor: '#0B0B0B',
       },
       tabBarItemStyle: { 
@@ -160,6 +161,14 @@ function ProfileTopTabs() {
   );
 }
 
+function NotificationsButton({ navigation }) {
+  return (
+    <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+      <Ionicons name={'notifications-outline'} size={25} color={'white'} />
+    </TouchableOpacity>
+  );
+}
+
 export default function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -203,62 +212,70 @@ export default function App() {
   } else {
     return (
       <SafeAreaView style={styles.wrapper}>
-      <ThemeProvider>
-        <NavigationContainer theme={MyTheme}>
-          {!isLoggedIn ? (
-            <Stack.Navigator>
-              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-            </Stack.Navigator>
-          ) : (
-            <>
-              <View style={[styles.dflex, styles.justifyContentBetween, styles.logoBar]}>
-                <View>
-                  <SvgXml xml={LOGO_SVG}/>
+        <ThemeProvider>
+          <NavigationContainer theme={MyTheme}>
+            {!isLoggedIn ? (
+              <Stack.Navigator>
+                <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+              </Stack.Navigator>
+            ) : (
+              <>
+                <View style={[styles.dflex, styles.justifyContentCenter, styles.logoBar]}>
+                  <View>
+                    <SvgXml xml={LOGO_SVG}/>
+                  </View>
+                  {/* <View>
+                    <NotificationsButton />
+                  </View> */}
                 </View>
-                <View>
-                  <Ionicons name={'notifications-outline'} size={25} color={'white'} />
-                </View>
-              </View>
 
-              <Tab.Navigator screenOptions={({ route }) => ({
-                headerStyle: {
-                  backgroundColor: 'transparent',
-                },
-                headerTitleStyle: {
-                  fontFamily: 'Montserrat_500Medium',
-                },
-                tabBarStyle: { height: 70, backgroundColor: '#0B0B0B' },
-                tabBarShowLabel: false,
-                tabBarIcon: ({ focused, color, size }) => {
-                  let iconName;
-                  
-                  if (route.name === 'Home') {
-                    iconName = focused ? 'home' : 'home-outline';
-                    size = 28
-                  } else if (route.name === 'Profile') {
-                    iconName = focused ? 'person' : 'person-outline';
-                    size = 28
-                  } else if (route.name === 'Add') {
-                    iconName = focused ? 'add-circle' : 'add-circle';
-                    size = 60
-                  }
-                  
-                  // You can return any component that you like here!
-                  return <Ionicons name={iconName} size={size} color={color} />;
-                },
-                tabBarActiveTintColor: MyTheme.colors.iconActive,
-                tabBarInactiveTintColor: MyTheme.colors.iconDefault,
-              })}>
-                <Tab.Screen name="Home" component={HomeTopTabs} options={{ headerShown: false }} />
-                <Tab.Screen name="Add" component={NewEntryScreen} options={{ headerShown: false }} />
-                <Tab.Screen name="Profile" component={ProfileTopTabs} options={{ headerShown: false }} />
-              </Tab.Navigator>
-            </>
+                <Tab.Navigator screenOptions={({ route }) => ({
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTitleStyle: {
+                    fontFamily: 'Montserrat_500Medium',
+                  },
+                  tabBarStyle: { height: 70, backgroundColor: '#0B0B0B' },
+                  tabBarShowLabel: false,
+                  tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+                    
+                    if (route.name === 'Home') {
+                      iconName = focused ? 'home' : 'home-outline';
+                      size = 28
+                    } else if (route.name === 'Profile') {
+                      iconName = focused ? 'person' : 'person-outline';
+                      size = 28
+                    } else if (route.name === 'Add') {
+                      iconName = focused ? 'add-circle' : 'add-circle';
+                      size = 60
+                    } else if (route.name === 'Notifications') {
+                      iconName = focused ? 'notifications' : 'notifications-outline';
+                      size = 28
+                    } else if (route.name === 'Search') {
+                      iconName = focused ? 'search' : 'search-outline';
+                      size = 28
+                    }
+                    
+                    // You can return any component that you like here!
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                  },
+                  tabBarActiveTintColor: MyTheme.colors.iconActive,
+                  tabBarInactiveTintColor: MyTheme.colors.iconDefault,
+                })}>
+                  <Tab.Screen name="Home" component={HomeTopTabs} options={{ headerShown: false }} />
+                  <Tab.Screen name="Search" component={SearchScreen} options={{ headerShown: false }} />
+                  <Tab.Screen name="Add" component={NewEntryScreen} options={{ headerShown: false }} />
+                  <Tab.Screen name="Notifications" component={NotificationScreen} options={{ headerShown: false }} />
+                  <Tab.Screen name="Profile" component={ProfileTopTabs} options={{ headerShown: false }} />
+                </Tab.Navigator>
+              </>
 
-          )}
-        </NavigationContainer>
-      </ThemeProvider>
+            )}
+          </NavigationContainer>
+        </ThemeProvider>
       </SafeAreaView>
     );
   }
@@ -271,6 +288,9 @@ const styles = StyleSheet.create({
   },
   justifyContentBetween: {
     justifyContent: 'space-between',
+  },
+  justifyContentCenter: {
+    justifyContent: 'center',
   },
   wrapper: {
     flex: 1,

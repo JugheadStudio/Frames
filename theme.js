@@ -5,6 +5,7 @@ const theme = {
     secondary: '#fff',
     text1: '#F0F0F0',
     text2: '#878787',
+    dark1: '#282828'
   },
   typography: {
     fontSize: 16,
