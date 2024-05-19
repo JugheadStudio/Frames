@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, SafeAreaView } from 'react-native'
 import { SvgXml } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
-import {handleLogin} from '../services/authService'
+import { handleLogin } from '../services/authService'
 
 import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
@@ -31,10 +31,10 @@ const BACKGROUND_SVG = `
 `;
 
 function LoginScreen() {
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   const [isActiveEmail, setActiveEmail] = useState(false);
   const [isActivePassword, setActivePassword] = useState(false);
 
@@ -58,14 +58,14 @@ function LoginScreen() {
         <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
 
         <View style={styles.content}>
-          <SvgXml xml={LOGO_SVG}/>
+          <SvgXml xml={LOGO_SVG} />
 
           <GlobalText style={styles.title}>LOGIN</GlobalText>
 
           <GlobalText style={styles.label}>Email</GlobalText>
 
           <TextInput
-            style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20] } onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
+            style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
             placeholder="Email"
             placeholderTextColor="#848484"
             onChangeText={newText => setEmail(newText)}
@@ -75,7 +75,7 @@ function LoginScreen() {
           <GlobalText style={styles.label}>Password</GlobalText>
 
           <TextInput
-            style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb10] } onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
+            style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb10]} onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
             placeholder="Password"
             placeholderTextColor="#848484"
             onChangeText={newText => setPassword(newText)}
@@ -84,7 +84,7 @@ function LoginScreen() {
           />
           <GlobalText style={styles.forgotPassword}>Forgot Password</GlobalText>
 
-          <GlobalButton className="primary" buttonText="Login"  onPress={login} style={styles.mb20} />
+          <GlobalButton className="primary" buttonText="Login" onPress={login} style={styles.mb20} />
           <GlobalButton className="secondary" buttonText="Register" onPress={navigateToRegister} />
         </View>
 
@@ -125,9 +125,9 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   title: {
-      fontSize: 35,
-      color: "#ECEDEE",
-      marginVertical: 70,
+    fontSize: 35,
+    color: "#ECEDEE",
+    marginVertical: 70,
   },
   label: {
     fontSize: 14,

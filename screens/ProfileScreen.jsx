@@ -1,17 +1,17 @@
-import { StyleSheet, View, Text, ScrollView, SafeAreaView  } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
 
-import {handleSignOut} from '../services/authService';
+import { handleSignOut } from '../services/authService';
 import { auth } from '../config/firebase';
 
-function ProfileScreen(){
-  
+function ProfileScreen() {
+
   const [userEmail, setUserEmail] = useState(null);
 
   const theme = useTheme();
-  
+
   const handleLogout = () => {
     handleSignOut()
   }
@@ -19,7 +19,7 @@ function ProfileScreen(){
   const fetchUserEmail = () => {
     const user = auth.currentUser; // Get the current user
     if (user) {
-        setUserEmail(user.email); // Set user email in state
+      setUserEmail(user.email); // Set user email in state
     }
   }
 
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+    marginTop: 15
   },
   content: {
     flex: 1,

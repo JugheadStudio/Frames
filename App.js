@@ -1,32 +1,32 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, TouchableOpacity } from 'react-native'
-import AppLoading from 'expo-app-loading';
+import { useEffect, useState } from "react";
+import { StyleSheet, SafeAreaView, View, TouchableOpacity } from "react-native";
+import AppLoading from "expo-app-loading";
 
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './config/firebase';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./config/firebase";
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { ThemeProvider } from './ThemeProvider';
-import { SvgXml } from 'react-native-svg';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { ThemeProvider } from "./ThemeProvider";
+import { SvgXml } from "react-native-svg";
 
 // Screens ----------------------------------
-import NotificationScreen from './screens/NotificationScreen';
-import NewEntryScreen from './screens/NewEntryScreen';
-import SearchScreen from './screens/searchScreen';
+import NotificationScreen from "./screens/NotificationScreen";
+import NewEntryScreen from "./screens/NewEntryScreen";
+import SearchScreen from "./screens/SearchScreen";
 
-import RegisterScreen from './screens/RegisterScreen';
-import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from "./screens/RegisterScreen";
+import LoginScreen from "./screens/LoginScreen";
 
-import HomeScreen from './screens/HomeScreen';
-import InfoScreen from './screens/infoScreen';
+import HomeScreen from "./screens/HomeScreen";
+import InfoScreen from "./screens/infoScreen";
 
-import ProfileScreen from './screens/ProfileScreen';
-import SettingsScreen from './screens/SettingsScreen';
+import ProfileScreen from "./screens/ProfileScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 
 import {
   useFonts,
@@ -48,8 +48,8 @@ import {
   Montserrat_700Bold_Italic,
   Montserrat_800ExtraBold_Italic,
   Montserrat_900Black_Italic,
-} from '@expo-google-fonts/montserrat';
-import theme from './theme';
+} from "@expo-google-fonts/montserrat";
+import theme from "./theme";
 
 const LOGO_SVG = `
 <svg width="150" height="23" viewBox="0 0 243 37" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,52 +74,52 @@ const TopTab = createMaterialTopTabNavigator();
 const MyTheme = {
   dark: true,
   colors: {
-    background: '#0B0B0B',
-    card: '#040404',
-    text: '#F0F0F0',
-    border: 'transparent',
-    notification: 'rgb(255, 69, 58)',
-    iconDefault: '#F0F0F0',
-    iconActive: '#906447',
+    background: "#0B0B0B",
+    card: "#040404",
+    text: "#F0F0F0",
+    border: "transparent",
+    notification: "rgb(255, 69, 58)",
+    iconDefault: "#F0F0F0",
+    iconActive: "#906447",
   },
-  headerTintColor: '#fff',
+  headerTintColor: "#fff",
   headerTitleStyle: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 };
 
 function HomeTopTabs() {
   return (
     <TopTab.Navigator
-    initialRouteName="Feed"
-    screenOptions={{
-      tabBarActiveTintColor: theme.colors.text1,
-      tabBarInactiveTintColor: theme.colors.text2,
-      tabBarLabelStyle: { 
-        fontSize: 16, 
-        fontFamily: theme.font.font500, 
-        textTransform: 'capitalize' 
-      },
-      tabBarStyle: { 
-        backgroundColor: '#0B0B0B',
-      },
-      tabBarItemStyle: { 
-        width: 'auto'
-      },
-      tabBarContentContainerStyle: {
-        justifyContent: 'center'
-      },
-      tabBarIndicatorStyle: {
-        backgroundColor: theme.colors.primary,
-        height: 2,
-      },
-      tabBarIndicatorContainerStyle: {
-        marginHorizontal: 143,
-      }
-    }}
+      initialRouteName="Feed"
+      screenOptions={{
+        tabBarActiveTintColor: theme.colors.text1,
+        tabBarInactiveTintColor: theme.colors.text2,
+        tabBarLabelStyle: {
+          fontSize: 16,
+          fontFamily: theme.font.font500,
+          textTransform: "capitalize",
+        },
+        tabBarStyle: {
+          backgroundColor: "#0B0B0B",
+        },
+        tabBarItemStyle: {
+          width: "auto",
+        },
+        tabBarContentContainerStyle: {
+          justifyContent: "center",
+        },
+        tabBarIndicatorStyle: {
+          backgroundColor: theme.colors.primary,
+          height: 2,
+        },
+        tabBarIndicatorContainerStyle: {
+          marginHorizontal: 143,
+        },
+      }}
     >
-      <TopTab.Screen name="Entries" component={HomeScreen} options={{ tabBarLabel: 'Entries' }} />
-      <TopTab.Screen name="Info" component={InfoScreen} options={{ tabBarLabel: 'Info' }} />
+      <TopTab.Screen name="Entries" component={HomeScreen} options={{ tabBarLabel: "Entries" }} />
+      <TopTab.Screen name="Info" component={InfoScreen} options={{ tabBarLabel: "Info" }} />
     </TopTab.Navigator>
   );
 }
@@ -127,64 +127,63 @@ function HomeTopTabs() {
 function ProfileTopTabs() {
   return (
     <TopTab.Navigator
-    initialRouteName="Feed"
-    screenOptions={{
-      tabBarActiveTintColor: theme.colors.text1,
-      tabBarInactiveTintColor: theme.colors.text2,
-      tabBarLabelStyle: { 
-        fontSize: 16, 
-        fontFamily: theme.font.font500, 
-        textTransform: 'capitalize' 
-      },
-      tabBarStyle: { 
-        // backgroundColor: '#040404',
-        backgroundColor: '#0B0B0B',
-      },
-      tabBarItemStyle: { 
-        width: 'auto'
-      },
-      tabBarContentContainerStyle: {
-        justifyContent: 'center'
-      },
-      tabBarIndicatorStyle: {
-        backgroundColor: theme.colors.primary,
-        height: 2,
-      },
-      tabBarIndicatorContainerStyle: {
-        marginHorizontal: 113,
-      }
-    }}
+      initialRouteName="Feed"
+      screenOptions={{
+        tabBarActiveTintColor: theme.colors.text1,
+        tabBarInactiveTintColor: theme.colors.text2,
+        tabBarLabelStyle: {
+          fontSize: 16,
+          fontFamily: theme.font.font500,
+          textTransform: "capitalize",
+        },
+        tabBarStyle: {
+          // backgroundColor: '#040404',
+          backgroundColor: "#0B0B0B",
+        },
+        tabBarItemStyle: {
+          width: "auto",
+        },
+        tabBarContentContainerStyle: {
+          justifyContent: "center",
+        },
+        tabBarIndicatorStyle: {
+          backgroundColor: theme.colors.primary,
+          height: 2,
+        },
+        tabBarIndicatorContainerStyle: {
+          marginHorizontal: 113,
+        },
+      }}
     >
-      <TopTab.Screen name="My Profile" component={ProfileScreen} options={{ tabBarLabel: 'My Profile' }} />
-      <TopTab.Screen name="Settings" component={SettingsScreen} options={{ tabBarLabel: 'Settings' }} />
+      <TopTab.Screen name="My Profile" component={ProfileScreen} options={{ tabBarLabel: "My Profile" }} />
+      <TopTab.Screen name="Settings" component={SettingsScreen} options={{ tabBarLabel: "Settings" }} />
     </TopTab.Navigator>
   );
 }
 
 function NotificationsButton({ navigation }) {
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-      <Ionicons name={'notifications-outline'} size={25} color={'white'} />
+    <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
+      <Ionicons name={"notifications-outline"} size={25} color={"white"} />
     </TouchableOpacity>
   );
 }
 
 export default function App() {
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setIsLoggedIn(true)
-        console.log('User logged in - ' + user.email);
+        setIsLoggedIn(true);
+        console.log("User logged in - " + user.email);
       } else {
-        setIsLoggedIn(false)
-        console.log('No user loggged in');
+        setIsLoggedIn(false);
+        console.log("No user loggged in");
       }
-    })
-    return unsubscribe
-  }, [])
+    });
+    return unsubscribe;
+  }, []);
 
   let [fontsLoaded] = useFonts({
     Montserrat_100Thin,
@@ -223,48 +222,50 @@ export default function App() {
               <>
                 <View style={[styles.dflex, styles.justifyContentCenter, styles.logoBar]}>
                   <View>
-                    <SvgXml xml={LOGO_SVG}/>
+                    <SvgXml xml={LOGO_SVG} />
                   </View>
                   {/* <View>
                     <NotificationsButton />
                   </View> */}
                 </View>
 
-                <Tab.Navigator screenOptions={({ route }) => ({
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTitleStyle: {
-                    fontFamily: 'Montserrat_500Medium',
-                  },
-                  tabBarStyle: { height: 70, backgroundColor: '#0B0B0B' },
-                  tabBarShowLabel: false,
-                  tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
-                    
-                    if (route.name === 'Home') {
-                      iconName = focused ? 'home' : 'home-outline';
-                      size = 28
-                    } else if (route.name === 'Profile') {
-                      iconName = focused ? 'person' : 'person-outline';
-                      size = 28
-                    } else if (route.name === 'Add') {
-                      iconName = focused ? 'add-circle' : 'add-circle';
-                      size = 60
-                    } else if (route.name === 'Notifications') {
-                      iconName = focused ? 'notifications' : 'notifications-outline';
-                      size = 28
-                    } else if (route.name === 'Search') {
-                      iconName = focused ? 'search' : 'search-outline';
-                      size = 28
-                    }
-                    
-                    // You can return any component that you like here!
-                    return <Ionicons name={iconName} size={size} color={color} />;
-                  },
-                  tabBarActiveTintColor: MyTheme.colors.iconActive,
-                  tabBarInactiveTintColor: MyTheme.colors.iconDefault,
-                })}>
+                <Tab.Navigator
+                  screenOptions={({ route }) => ({
+                    headerStyle: {
+                      backgroundColor: "transparent",
+                    },
+                    headerTitleStyle: {
+                      fontFamily: "Montserrat_500Medium",
+                    },
+                    tabBarStyle: { height: 70, backgroundColor: "#0B0B0B" },
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ focused, color, size }) => {
+                      let iconName;
+
+                      if (route.name === "Home") {
+                        iconName = focused ? "home" : "home-outline";
+                        size = 28;
+                      } else if (route.name === "Profile") {
+                        iconName = focused ? "person" : "person-outline";
+                        size = 28;
+                      } else if (route.name === "Add") {
+                        iconName = focused ? "add-circle" : "add-circle";
+                        size = 35;
+                      } else if (route.name === "Notifications") {
+                        iconName = focused ? "notifications" : "notifications-outline";
+                        size = 28;
+                      } else if (route.name === "Search") {
+                        iconName = focused ? "search" : "search-outline";
+                        size = 28;
+                      }
+
+                      // You can return any component that you like here!
+                      return <Ionicons name={iconName} size={size} color={color} />;
+                    },
+                    tabBarActiveTintColor: MyTheme.colors.iconActive,
+                    tabBarInactiveTintColor: MyTheme.colors.iconDefault,
+                  })}
+                >
                   <Tab.Screen name="Home" component={HomeTopTabs} options={{ headerShown: false }} />
                   <Tab.Screen name="Search" component={SearchScreen} options={{ headerShown: false }} />
                   <Tab.Screen name="Add" component={NewEntryScreen} options={{ headerShown: false }} />
@@ -272,7 +273,6 @@ export default function App() {
                   <Tab.Screen name="Profile" component={ProfileTopTabs} options={{ headerShown: false }} />
                 </Tab.Navigator>
               </>
-
             )}
           </NavigationContainer>
         </ThemeProvider>
@@ -283,23 +283,23 @@ export default function App() {
 
 const styles = StyleSheet.create({
   dflex: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
   },
   justifyContentBetween: {
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   justifyContentCenter: {
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   wrapper: {
     flex: 1,
     // backgroundColor: '#040404',
-    backgroundColor: '#0B0B0B',
+    backgroundColor: "#0B0B0B",
   },
   logoBar: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: 25,
     paddingVertical: 15,
   },
-})
+});

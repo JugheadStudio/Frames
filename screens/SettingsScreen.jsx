@@ -1,7 +1,7 @@
-import { StyleSheet, View, Text, ScrollView, SafeAreaView  } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 
-import {handleSignOut} from '../services/authService';
+import { handleSignOut } from '../services/authService';
 import { auth } from '../config/firebase';
 
 // Components
@@ -9,12 +9,12 @@ import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
 import GlobalButton from '../components/GlobalButton';
 
-function SettingsScreen(){
-  
+function SettingsScreen() {
+
   const [userEmail, setUserEmail] = useState(null);
 
   const theme = useTheme();
-  
+
   const handleLogout = () => {
     handleSignOut()
   }
@@ -22,7 +22,7 @@ function SettingsScreen(){
   const fetchUserEmail = () => {
     const user = auth.currentUser; // Get the current user
     if (user) {
-        setUserEmail(user.email); // Set user email in state
+      setUserEmail(user.email); // Set user email in state
     }
   }
 
@@ -37,7 +37,6 @@ function SettingsScreen(){
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
           <View style={styles.content}>
-            <GlobalText>Settings</GlobalText>
             <GlobalButton className="secondary" buttonText="Sign Out" onPress={handleLogout} />
           </View>
 
@@ -61,6 +60,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+    marginTop: 15
   },
   content: {
     flex: 1,
