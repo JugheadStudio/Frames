@@ -9,6 +9,7 @@ import { SvgXml } from 'react-native-svg';
 import {handleSignOut} from '../services/authService';
 import { auth } from '../config/firebase';
 import GlobalButton from '../components/GlobalButton';
+import { createNewEntry } from '../services/DbService'
 
 const IMAGE_SVG = `
 <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -29,6 +30,16 @@ function NewEntryScreen(){
   const [isActiveDescription, setActiveDescription] = useState(false);
 
   const submit = () => {
+
+    var items = {image, photoTitle, description}
+  
+    var success = createNewEntry(items);
+    if (success) {
+      navigation.goBack();
+    } else {
+      // Validation on why
+    }
+
     setPhotoTitle('');
     setDescription('');
   }

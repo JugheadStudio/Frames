@@ -1,14 +1,17 @@
-import { StyleSheet, View, Text, ScrollView, SafeAreaView } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, SafeAreaView, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
 
 import { handleSignOut } from '../services/authService';
 import { auth } from '../config/firebase';
+import { db } from '../firebase';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 function ProfileScreen() {
 
   const [userEmail, setUserEmail] = useState(null);
+  const { itemId, itemdTitle, itemdDescription } = route.params;
 
   const theme = useTheme();
 
@@ -27,14 +30,26 @@ function ProfileScreen() {
     fetchUserEmail();
   }, []);
 
+  const handleDelete = async () => {
+    const itemRef = doc(db, "items", itemId);
+    await deleteDoc(itemRef);
+    navigation.goBack();
+};
+
   return (
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.container}>
 
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
-          <View style={styles.content}>
-            <GlobalText>My Profile</GlobalText>
+          <View style={styles.profileContainer}>
+            <View style={styles.imageWrapper}>
+              <Image source={require('../assets/pfp.png')} style={styles.image} />
+            </View>
+
+            <View style={styles.profileDetails}>
+              <GlobalText style={styles.username}>Ruan Jordaan</GlobalText>
+            </View>
           </View>
 
         </ScrollView>
@@ -49,20 +64,42 @@ export default ProfileScreen
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
   },
   wrapper: {
     flex: 1,
   },
   container: {
     flex: 1,
-    position: 'relative',
     marginTop: 15
   },
   content: {
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 25,
-    position: 'relative',
   },
+  profileContainer: {
+    // display: 'flex',
+    // flexDirection: 'row',
+    paddingHorizontal: 15,
+    marginTop: 25,
+    alignItems: 'center'
+  },
+  imageWrapper: {
+    width: 75,
+    aspectRatio: 1,
+    marginBottom: 1,
+    // marginRight: 25
+  },
+  image: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius: 50,
+  },
+  username : {
+    // fontFamily: 'Montserrat_700Bold',
+    marginTop: 15,
+    fontSize: 18
+  }
 })

@@ -9,21 +9,54 @@ import NotificationScreen from './NotificationScreen';
 
 // Components
 import EntryCard from '../components/EntryCard';
+import { getEntries } from '../services/DbService';
 
-function HomeScreen(){
-  
+function HomeScreen() {
+
   const [userEmail, setUserEmail] = useState(null);
+  const [entries, setEntries] = useState([])
 
   const fetchUserEmail = () => {
     const user = auth.currentUser;
     if (user) {
-        setUserEmail(user.email);
+      setUserEmail(user.email);
     }
   }
 
   useEffect(() => {
     fetchUserEmail();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Do something when the screen is focused
+      handleGettingOfData()
+
+      return () => {
+        // Do something when the screen is unfocused
+      };
+    }, [])
+  );
+
+  const handleGettingOfData = async () => {
+    var allData = await getEntries()
+    // console.log("data:" + allData)
+    setEntries(allData)
+  }
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity style={styles.card} onPress={() => {
+      navigation.navigate("Details", {
+        itemId: item.id,
+        itemdTitle: item.title,
+        itemdDescription: item.description,
+      });
+    }}>
+      <Text style={item.isCompleted ? styles.completedText : null}>
+        {item.title}
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -32,10 +65,10 @@ function HomeScreen(){
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
           <View style={styles.content}>
-            <EntryCard/>
-            <EntryCard/>
-            <EntryCard/>
-            <EntryCard/>
+            <EntryCard />
+            <EntryCard />
+            <EntryCard />
+            <EntryCard />
           </View>
 
         </ScrollView>
