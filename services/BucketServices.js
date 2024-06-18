@@ -1,11 +1,19 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../config/firebase";
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 
 export const handleUploadOfImage = async (uri, fileName) => {
   try {
     console.log("Uploading image...");
-    
-    // Create a blob from the URI using XMLHttpRequest
+
+    // Manipulate the image: resize and compress
+    const manipulatedImage = await manipulateAsync(
+      uri,
+      [{ resize: { width: 800 } }], // Example resize to width of 800 pixels
+      { compress: 0.75, format: SaveFormat.JPEG }
+    );
+
+    // Create a blob from the manipulated image URI using XMLHttpRequest
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -16,7 +24,7 @@ export const handleUploadOfImage = async (uri, fileName) => {
         reject(new TypeError("Network request failed"));
       };
       xhr.responseType = "blob";
-      xhr.open("GET", uri, true);
+      xhr.open("GET", manipulatedImage.uri, true);
       xhr.send(null);
     });
 
@@ -32,7 +40,7 @@ export const handleUploadOfImage = async (uri, fileName) => {
     // Get the download URL of the uploaded image
     const downloadURL = await getDownloadURL(storageRef);
     console.log("Image uploaded. Download URL:", downloadURL);
-    
+
     return downloadURL; // Return the download URL
 
   } catch (error) {

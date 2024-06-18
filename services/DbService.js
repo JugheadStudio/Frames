@@ -1,10 +1,10 @@
 import { collection, addDoc, getDocs, query, orderBy } from "firebase/firestore"; 
 import { db } from "../config/firebase";
 
-export const createNewEntry = async (item) => {
+export const createNewEntry = async (entry) => {
 
 	try {
-	const docRef = await addDoc(collection(db, "items"), item);
+	const docRef = await addDoc(collection(db, "entries"), entry);
 		console.log("Document written with ID: ", docRef.id);
 		return true
 	} catch (e) {
@@ -16,16 +16,16 @@ export const createNewEntry = async (item) => {
 
 export const getEntries = async() => {
 	
-	var allItems = [];
+	var allEntries = [];
 
-	var q = query(collection(db, "items"), orderBy('priority', 'desc'));
+	var q = query(collection(db, "entries"), orderBy('priority', 'desc'));
 	const querySnapshot = await getDocs(q);
 	querySnapshot.forEach((doc) => {
 
-		allItems.push({...doc.data(), id: doc.id})
+		allEntries.push({...doc.data(), id: doc.id})
 	});
 
-	console.log(allItems);
-	return allItems
+	console.log(allEntries);
+	return allEntries
 	 
 	}
