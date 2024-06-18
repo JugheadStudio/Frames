@@ -1,13 +1,15 @@
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { StyleSheet, View, Text, ScrollView, SafeAreaView, TextInput, Button, TouchableOpacity, Image } from 'react-native'
 import GlobalText from '../components/GlobalText';
+
+import * as ImagePicker from 'expo-image-picker';
+import { handleUploadOfImage } from '../services/BucketServices';
 
 import theme from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SvgXml } from 'react-native-svg';
 
-import {handleSignOut} from '../services/authService';
-import { auth } from '../config/firebase';
+import { auth, firestore } from '../config/firebase';
 import GlobalButton from '../components/GlobalButton';
 import { createNewEntry } from '../services/DbService'
 
@@ -19,30 +21,65 @@ const IMAGE_SVG = `
 </svg>
 `;
 
-
-
 function NewEntryScreen(){
 
   const [photoTitle, setPhotoTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
   
   const [isActivePhotoTitle, setActivephotoTitle] = useState(false);
   const [isActiveDescription, setActiveDescription] = useState(false);
 
-  const submit = () => {
+  const submit = async () => {
+    // Validate input if needed
 
-    var items = {image, photoTitle, description}
-  
-    var success = createNewEntry(items);
-    if (success) {
+    // Prepare data for Firestore
+    const entry = {
+      photoTitle,
+      description,
+      imageUrl: '',
+      // timestamp: firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+      // Upload image first, if available
+      if (image) {
+        const imageUrl = await handleUploadOfImage(image, photoTitle); // Assuming handleUploadOfImage returns the image URL
+        entry.imageUrl = imageUrl;
+      }
+
+      // Add entry to Firestore
+      await createNewEntry(entry);
+
+      // Clear input fields
+      setPhotoTitle('');
+      setDescription('');
+      setImage(null);
+
+      // Navigate back
       navigation.goBack();
-    } else {
-      // Validation on why
+    } catch (error) {
+      console.error('Error submitting entry:', error);
+      // Handle error
     }
+  };
 
-    setPhotoTitle('');
-    setDescription('');
-  }
+  //handles selecting the image from camera roll
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+        setImage(result.assets[0].uri);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -50,32 +87,42 @@ function NewEntryScreen(){
 
         <View style={styles.imageContainer}>
           <View style={styles.imageUploadContainer}>
-            <SvgXml xml={IMAGE_SVG}/>
-            <GlobalText style={{color: theme.colors.text2, marginTop: 15}}>Upload Photo</GlobalText>
+            <TouchableOpacity onPress={pickImage} style={styles.touchableContainer}>
+              {image ? (
+                <Image source={{ uri: image }} style={styles.image} />
+              ) : (
+                <>
+                  <SvgXml xml={IMAGE_SVG} />
+                  <GlobalText style={{ color: theme.colors.text2, marginTop: 15 }}>Upload Photo</GlobalText>
+                </>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.container}>
           <GlobalText style={styles.label}>Title</GlobalText>
-
           <TextInput
-            style={[isActivePhotoTitle ? styles.textFieldActive : styles.textField, styles.mb20] } onFocus={() => setActivephotoTitle(true)} onBlur={() => setActivephotoTitle(false)}
+            style={[isActivePhotoTitle ? styles.textFieldActive : styles.textField, styles.mb20]}
+            onFocus={() => setActivephotoTitle(true)}
+            onBlur={() => setActivephotoTitle(false)}
             placeholder="Add a title..."
             placeholderTextColor="#848484"
             onChangeText={newText => setPhotoTitle(newText)}
-            defaultValue={photoTitle}
+            value={photoTitle}
             maxLength={30}
           />
 
           <GlobalText style={styles.label}>Description</GlobalText>
-
           <TextInput
             multiline
-            style={[isActiveDescription ? styles.textFieldActive : styles.textField, styles.mb20, styles.descriptionInput] } onFocus={() => setActiveDescription(true)} onBlur={() => setActiveDescription(false)}
+            style={[isActiveDescription ? styles.textFieldActive : styles.textField, styles.mb20, styles.descriptionInput]}
+            onFocus={() => setActiveDescription(true)}
+            onBlur={() => setActiveDescription(false)}
             placeholder="Write a caption..."
             placeholderTextColor="#848484"
             onChangeText={newText => setDescription(newText)}
-            defaultValue={description}
+            value={description}
             numberOfLines={4}
             maxLength={200}
           />
@@ -92,11 +139,10 @@ export default NewEntryScreen
 
 const styles = StyleSheet.create({
   mb20: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   scrollContainer: {
     flexGrow: 1,
-    // justifyContent: 'center',
   },
   wrapper: {
     flex: 1,
@@ -119,13 +165,14 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.dark1,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   label: {
     fontSize: 14,
     marginBottom: 10,
     color: '#B9B8B6',
     width: '100%',
-    textAlign: 'left'
+    textAlign: 'left',
   },
   textField: {
     borderColor: '#8C8C8C',
@@ -149,5 +196,15 @@ const styles = StyleSheet.create({
   },
   descriptionInput: {
     minHeight: 100,
-  }
-})
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  touchableContainer: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

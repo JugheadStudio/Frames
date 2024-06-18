@@ -91,7 +91,7 @@ const MyTheme = {
 function HomeTopTabs() {
   return (
     <TopTab.Navigator
-      initialRouteName="Feed"
+      initialRouteName="Entries"
       screenOptions={{
         tabBarActiveTintColor: theme.colors.text1,
         tabBarInactiveTintColor: theme.colors.text2,
@@ -127,7 +127,7 @@ function HomeTopTabs() {
 function ProfileTopTabs() {
   return (
     <TopTab.Navigator
-      initialRouteName="Feed"
+      initialRouteName="Entries"
       screenOptions={{
         tabBarActiveTintColor: theme.colors.text1,
         tabBarInactiveTintColor: theme.colors.text2,
@@ -224,9 +224,6 @@ export default function App() {
                   <View>
                     <SvgXml xml={LOGO_SVG} />
                   </View>
-                  {/* <View>
-                    <NotificationsButton />
-                  </View> */}
                 </View>
 
                 <Tab.Navigator

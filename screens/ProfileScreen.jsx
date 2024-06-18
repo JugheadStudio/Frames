@@ -5,13 +5,13 @@ import GlobalText from '../components/GlobalText';
 
 import { handleSignOut } from '../services/authService';
 import { auth } from '../config/firebase';
-import { db } from '../firebase';
+import { db } from '../config/firebase';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
-function ProfileScreen() {
+function ProfileScreen({ route, navigation }) {
 
   const [userEmail, setUserEmail] = useState(null);
-  const { itemId, itemdTitle, itemdDescription } = route.params;
+  // const { itemId, itemdTitle, itemdDescription } = route.params;
 
   const theme = useTheme();
 
@@ -30,11 +30,11 @@ function ProfileScreen() {
     fetchUserEmail();
   }, []);
 
-  const handleDelete = async () => {
-    const itemRef = doc(db, "items", itemId);
-    await deleteDoc(itemRef);
-    navigation.goBack();
-};
+  // const handleDelete = async () => {
+  //   const itemRef = doc(db, "items", itemId);
+  //   await deleteDoc(itemRef);
+  //   navigation.goBack();
+  // };
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 50,
   },
-  username : {
+  username: {
     // fontFamily: 'Montserrat_700Bold',
     marginTop: 15,
     fontSize: 18

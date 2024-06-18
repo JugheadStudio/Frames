@@ -1,4 +1,5 @@
 import { StyleSheet, View, ScrollView, SafeAreaView } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react'
 
 import { auth } from '../config/firebase';
