@@ -12,6 +12,7 @@ import { SvgXml } from 'react-native-svg';
 import { auth, firestore } from '../config/firebase';
 import GlobalButton from '../components/GlobalButton';
 import { createNewEntry } from '../services/DbService'
+import { serverTimestamp } from "firebase/firestore";
 
 const IMAGE_SVG = `
 <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,14 +32,13 @@ function NewEntryScreen(){
   const [isActiveDescription, setActiveDescription] = useState(false);
 
   const submit = async () => {
-    // Validate input if needed
 
     // Prepare data for Firestore
     const entry = {
       photoTitle,
       description,
       imageUrl: '',
-      // timestamp: firestore.FieldValue.serverTimestamp()
+      timestamp: serverTimestamp()
     };
 
     try {
