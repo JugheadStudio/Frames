@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Image } from 'react-native'
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import theme from '../theme';
 
 // Components
 import GlobalText from '../components/GlobalText';
+import { auth, db } from '../config/firebase';
 
-function EntryCard({ username, profilePicture, imageUrl, likes, photoTitle, description }) {
+function EntryCard({ entryId, username, profilePicture, imageUrl, likes = [], photoTitle, description, handleLikePress }) {
+  const currentUserUid = auth.currentUser ? auth.currentUser.uid : 'anon';
+  const isLiked = likes.includes(currentUserUid);
+  const [currentLikes, setCurrentLikes] = useState(likes);
+
+  useEffect(() => {
+    setCurrentLikes(likes);
+  }, [likes]);
+
+  const handlePress = () => {
+    handleLikePress(entryId);
+  };
+  
   return (
     <View style={styles.container}>
       <View style={[styles.dflex, styles.profileContainer]}>
@@ -24,11 +37,11 @@ function EntryCard({ username, profilePicture, imageUrl, likes, photoTitle, desc
       </View>
 
       <View style={[styles.dflex, styles.likeTab]}>
-        <View style={styles.likeButtonContainer}>
-          <Ionicons name={'heart-outline'} size={25} color={'white'} />
-        </View>
+        <TouchableOpacity style={styles.likeButtonContainer} onPress={handlePress}>
+          <Ionicons name={isLiked ? 'heart' : 'heart-outline'} size={25} color={isLiked ? '#906447' : 'white'} />
+        </TouchableOpacity>
         <View>
-          <GlobalText>{likes}</GlobalText>
+          <GlobalText>{currentLikes.length}</GlobalText>
         </View>
       </View>
 
@@ -77,8 +90,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    width: '100%', // Image takes full width of its container
-    aspectRatio: 1, // Maintain the aspect ratio of 1:1
+    width: '100%',
+    aspectRatio: 1,
     resizeMode: 'cover'
   },
   entryTitle: {

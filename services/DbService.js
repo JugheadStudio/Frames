@@ -26,14 +26,20 @@ export const createNewUser = async (uid, userData) => {
   }
 }
 
-export const getEntries = async() => {
+// export const getEntries = async() => {
 
-  var allEntries = []
+//   var allEntries = []
 
-	const querySnapshot = await getDocs(collection(db, "entries"));
+// 	const querySnapshot = await getDocs(collection(db, "entries"));
 
-	querySnapshot.forEach((doc) => {
-    allEntries.push({...doc.data(), id: doc.id})
-	});
-  return allEntries
-}
+// 	querySnapshot.forEach((doc) => {
+//     allEntries.push({...doc.data(), id: doc.id})
+// 	});
+//   return allEntries
+// }
+
+export const getEntries = async () => {
+  const entriesSnapshot = await getDocs(collection(db, 'entries'));
+  const entriesList = entriesSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+  return entriesList;
+};

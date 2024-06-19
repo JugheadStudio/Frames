@@ -40,7 +40,7 @@ function NewEntryScreen({ navigation }){
       description,
       imageUrl: '',
       timestamp: serverTimestamp(),
-      likes: 0,
+      likes: [],
       userID: auth.currentUser ? auth.currentUser.uid : 'anonymous',
     };
 

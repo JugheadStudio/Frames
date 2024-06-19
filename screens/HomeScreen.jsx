@@ -9,7 +9,6 @@ import theme from '../theme';
 import NotificationScreen from './NotificationScreen';
 
 // Components
-import EntryCard from '../components/EntryCard';
 import { getEntries } from '../services/DbService';
 import EntriesList from '../components/EntriesList';
 
