@@ -7,28 +7,49 @@ import theme from '../theme';
 // Components
 import GlobalText from '../components/GlobalText';
 import { auth, db } from '../config/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
-function EntryCard({ entryId, username, profilePicture, imageUrl, likes = [], photoTitle, description, handleLikePress }) {
+function EntryCard({ entryId, userID, username, profilePicture, imageUrl, likes = [], photoTitle, description, handleLikePress }) {
   const currentUserUid = auth.currentUser ? auth.currentUser.uid : 'anon';
   const isLiked = likes.includes(currentUserUid);
+
   const [currentLikes, setCurrentLikes] = useState(likes);
+  const [postUsername, setPostUsername] = useState(username);
+  const [postProfilePicture, setPostProfilePicture] = useState(profilePicture);
 
   useEffect(() => {
     setCurrentLikes(likes);
+    getUserDetails()
   }, [likes]);
 
   const handlePress = () => {
     handleLikePress(entryId);
+  };
+
+  const getUserDetails = async () => {
+    try {
+      const userRef = doc(db, 'users', userID);
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setPostUsername(userData.username);
+        setPostProfilePicture(userData.profilePicture);
+      } else {
+        console.log('No user data found in Firestore for UID:', userID);
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
   };
   
   return (
     <View style={styles.container}>
       <View style={[styles.dflex, styles.profileContainer]}>
         <View style={styles.pfpContainer}>
-          <Image source={{ uri: profilePicture }} style={styles.pfp}/>
+          <Image source={{ uri: postProfilePicture }} style={styles.pfp}/>
         </View>
         <View>
-          <GlobalText style={styles.username}>{username}</GlobalText>
+          <GlobalText style={styles.username}>{postUsername}</GlobalText>
         </View>
       </View>
 

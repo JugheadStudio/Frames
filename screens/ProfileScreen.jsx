@@ -1,65 +1,106 @@
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, Image } from 'react-native'
+import { StyleSheet, View, ScrollView, SafeAreaView, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
+import GlobalButton from '../components/GlobalButton';
+
+import * as ImagePicker from 'expo-image-picker';
+import { handleUploadOfImage } from '../services/BucketServices';
 
 import { handleSignOut } from '../services/authService';
 import { auth } from '../config/firebase';
 import { db } from '../config/firebase';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 
 function ProfileScreen({ route, navigation }) {
-
-  const [userEmail, setUserEmail] = useState(null);
-  // const { itemId, itemdTitle, itemdDescription } = route.params;
-
-  const theme = useTheme();
+  const [username, setUsername] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
 
   const handleLogout = () => {
-    handleSignOut()
-  }
+    handleSignOut();
+  };
 
-  const fetchUserEmail = () => {
-    const user = auth.currentUser; // Get the current user
-    if (user) {
-      setUserEmail(user.email); // Set user email in state
+  const getUserDetails = async () => {
+    if (auth.currentUser) {
+      const userRef = doc(db, 'users', auth.currentUser.uid);
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setUsername(userData.username);
+        setProfilePic(userData.profilePicture);
+      } else {
+        console.log('No user data found in Firestore for UID:', auth.currentUser.uid);
+      }
     }
-  }
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+  
+    console.log(result);
+  
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const uri = result.assets[0].uri;
+      if (uri) {
+        try {
+          const imageUrl = await handleUploadOfImage(uri, `profile_${auth.currentUser.uid}.jpg`);
+          setProfilePic(imageUrl); // Update local state to reflect new profile picture
+          await updateProfilePicture(imageUrl); // Update Firestore
+        } catch (error) {
+          console.error("Failed to upload image and update profile:", error);
+        }
+      } else {
+        console.error("No URI found in the image result");
+      }
+    } else {
+      console.error("Image picking was canceled or no assets found");
+    }
+  };
+
+  const updateProfilePicture = async (imageUrl) => {
+    if (auth.currentUser) {
+      const userRef = doc(db, 'users', auth.currentUser.uid);
+      try {
+        await updateDoc(userRef, {
+          profilePicture: imageUrl
+        });
+        console.log('Profile picture updated successfully');
+      } catch (error) {
+        console.error('Error updating profile picture:', error);
+      }
+    }
+  };
 
   useEffect(() => {
-    fetchUserEmail();
+    getUserDetails();
   }, []);
-
-  // const handleDelete = async () => {
-  //   const itemRef = doc(db, "items", itemId);
-  //   await deleteDoc(itemRef);
-  //   navigation.goBack();
-  // };
 
   return (
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.container}>
-
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-
           <View style={styles.profileContainer}>
-            <View style={styles.imageWrapper}>
-              <Image source={require('../assets/pfp.png')} style={styles.image} />
-            </View>
-
+            <TouchableOpacity style={styles.imageWrapper} onPress={pickImage}>
+              <Image source={{ uri: profilePic }} style={styles.image} />
+            </TouchableOpacity>
             <View style={styles.profileDetails}>
-              <GlobalText style={styles.username}>Ruan Jordaan</GlobalText>
+              <GlobalText style={styles.username}>{username}</GlobalText>
+            </View>
+            <View style={styles.button}>
+              <GlobalButton className="secondary" buttonText="Sign Out" onPress={handleLogout} />
             </View>
           </View>
-
         </ScrollView>
-
       </View>
     </SafeAreaView>
-  )
+  );
 }
 
-export default ProfileScreen
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
   scrollContainer: {
@@ -75,12 +116,10 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 25,
   },
   profileContainer: {
     // display: 'flex',
     // flexDirection: 'row',
-    paddingHorizontal: 15,
     marginTop: 25,
     alignItems: 'center'
   },
@@ -101,5 +140,11 @@ const styles = StyleSheet.create({
     // fontFamily: 'Montserrat_700Bold',
     marginTop: 15,
     fontSize: 18
-  }
+  },
+  button: {
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 25,
+    marginTop: 50
+  },
 })

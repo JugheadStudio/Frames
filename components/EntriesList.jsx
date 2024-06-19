@@ -53,7 +53,7 @@ function EntriesList() {
       data={entries}
       keyExtractor={item => item.id}
       renderItem={({ item }) => (
-        <EntryCard entryId={item.id} {...item} handleLikePress={handleLikePress} />
+        <EntryCard entryId={item.id} userID={item.userID} {...item} handleLikePress={handleLikePress} />
       )}
     />
   );
