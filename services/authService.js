@@ -32,11 +32,11 @@ export const registerUser = async (email, password, username) => {
     const user = userCredential.user;
 
     // Create a user entry in Firestore
-    await createNewUser({
-      uid: user.uid,  // Use the UID from the authenticated user
+    await createNewUser(user.uid, {
+      uid: user.uid,
       username: username,
       email: email,
-      profilePicture: '',  // Default or placeholder profile picture
+      profilePicture: 'https://firebasestorage.googleapis.com/v0/b/frames-93ae5.appspot.com/o/placeholder.jpeg?alt=media&token=6057dfb3-f414-4fdc-9352-92fc28b310fe',  // Default or placeholder profile picture
     });
 
     return { success: true, userId: user.uid };

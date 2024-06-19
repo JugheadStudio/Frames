@@ -1,42 +1,26 @@
-import { StyleSheet, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { StyleSheet, View, Image } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import { auth } from '../config/firebase';
 import theme from '../theme';
 
 // Components
 import GlobalText from '../components/GlobalText';
 
-function EntryCard(){
-  
-  const [userEmail, setUserEmail] = useState(null);
-
-  const fetchUserEmail = () => {
-    const user = auth.currentUser;
-    if (user) {
-        setUserEmail(user.email);
-    }
-  }
-
-  useEffect(() => {
-    fetchUserEmail();
-  }, []);
-
+function EntryCard({ username, profilePicture, imageUrl, likes, photoTitle, description }) {
   return (
     <View style={styles.container}>
-
       <View style={[styles.dflex, styles.profileContainer]}>
         <View style={styles.pfpContainer}>
-          <Image source={require('../assets/pfp.png')} style={styles.pfp}/>
+          <Image source={{ uri: profilePicture }} style={styles.pfp}/>
         </View>
         <View>
-          <GlobalText style={styles.username}>Username</GlobalText>
+          <GlobalText style={styles.username}>{username}</GlobalText>
         </View>
       </View>
 
       <View style={styles.imageContainer}>
-        <Image source={require('../assets/post.jpg')} style={styles.image}/>
+        <Image source={{ uri: imageUrl }} style={styles.image}/>
       </View>
 
       <View style={[styles.dflex, styles.likeTab]}>
@@ -44,19 +28,19 @@ function EntryCard(){
           <Ionicons name={'heart-outline'} size={25} color={'white'} />
         </View>
         <View>
-          <GlobalText>100</GlobalText>
+          <GlobalText>{likes}</GlobalText>
         </View>
       </View>
 
       <View style={styles.descriptionContainer}>
-        <GlobalText style={styles.entryTitle}>Rock Chilling In The Middle</GlobalText>
-        <GlobalText style={styles.description}>This shot was taken while on a hike in Kaapsehoek near the little town. I saw this little gem and just knew I had to take a shot with the landscape in the background.</GlobalText>
+        <GlobalText style={styles.entryTitle}>{photoTitle}</GlobalText>
+        <GlobalText style={styles.description}>{description}</GlobalText>
       </View>
     </View>
-  )
+  );
 }
 
-export default EntryCard
+export default EntryCard;
 
 const styles = StyleSheet.create({
   dflex: {
@@ -93,8 +77,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    width: '100%',
-    height: 500,
+    width: '100%', // Image takes full width of its container
+    aspectRatio: 1, // Maintain the aspect ratio of 1:1
+    resizeMode: 'cover'
   },
   entryTitle: {
     fontFamily: theme.font.font700,

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, View, TextInput, ScrollView, SafeAreaView } from 'react-native'
+import { StyleSheet, View, TextInput, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native'
 import { SvgXml } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import {registerUser} from '../services/authService'
@@ -56,53 +56,56 @@ function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      <View style={styles.container}>
-
-        <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} >
 
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          <View style={styles.content}>
-            <SvgXml xml={LOGO_SVG}/>
+          <View style={styles.container}>
 
-            <GlobalText style={styles.title}>REGISTER</GlobalText>
+            <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
 
-            <GlobalText style={styles.label}>Username</GlobalText>
+                <View style={styles.content}>
+                  <SvgXml xml={LOGO_SVG}/>
 
-            <TextInput
-              style={[isActiveName ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveName(true)} onBlur={() => setActiveName(false)}
-              placeholder="Name"
-              placeholderTextColor="#848484"
-              onChangeText={newText => setUsername(newText)}
-              defaultValue={username}
-            />
+                  <GlobalText style={styles.title}>REGISTER</GlobalText>
 
-            <GlobalText style={styles.label}>Email</GlobalText>
+                  <GlobalText style={styles.label}>Username</GlobalText>
 
-            <TextInput
-              style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
-              placeholder="Email"
-              placeholderTextColor="#848484"
-              onChangeText={newText => setEmail(newText)}
-              defaultValue={email}
-            />
+                  <TextInput
+                    style={[isActiveName ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveName(true)} onBlur={() => setActiveName(false)}
+                    placeholder="Name"
+                    placeholderTextColor="#848484"
+                    onChangeText={newText => setUsername(newText)}
+                    defaultValue={username}
+                  />
 
-            <GlobalText style={styles.label}>Password</GlobalText>
+                  <GlobalText style={styles.label}>Email</GlobalText>
 
-            <TextInput
-              style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb30]} onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
-              placeholder="Password"
-              placeholderTextColor="#848484"
-              onChangeText={newText => setPassword(newText)}
-              defaultValue={password}
-              secureTextEntry={true}
-            />
+                  <TextInput
+                    style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
+                    placeholder="Email"
+                    placeholderTextColor="#848484"
+                    onChangeText={newText => setEmail(newText)}
+                    defaultValue={email}
+                  />
 
-            <GlobalButton className="primary" buttonText="Register" style={{ marginBottom: 20 }} onPress={register} />
-            <GlobalButton className="secondary" buttonText="Already a User" style={{ marginBottom: 80 }} onPress={navigateToLogin}/>
+                  <GlobalText style={styles.label}>Password</GlobalText>
+
+                  <TextInput
+                    style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb30]} onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
+                    placeholder="Password"
+                    placeholderTextColor="#848484"
+                    onChangeText={newText => setPassword(newText)}
+                    defaultValue={password}
+                    secureTextEntry={true}
+                  />
+
+                  <GlobalButton className="primary" buttonText="Register" style={{ marginBottom: 20 }} onPress={register} />
+                  <GlobalButton className="secondary" buttonText="Already a User" style={{ marginBottom: 20 }} onPress={navigateToLogin}/>
+                </View>
+
           </View>
         </ScrollView>
-
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

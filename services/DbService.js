@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, orderBy } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, query, orderBy, doc, setDoc } from "firebase/firestore"; 
 import { db } from "../config/firebase";
 
 export const createNewEntry = async (entry) => {
@@ -14,29 +14,26 @@ export const createNewEntry = async (entry) => {
 
 }
 
-export const createNewUser = async (user) => {
+export const createNewUser = async (uid, userData) => {
   try {
-    const docRef = await addDoc(collection(db, "users"), user);
-    console.log("Document written with ID: ", docRef.id);
-    return docRef.id;  // Return the document ID of the created user
+    const userRef = doc(db, "users", uid); // Create a reference to the document with UID as the document ID
+    await setDoc(userRef, userData); // Set the user data in this document
+    console.log("User document written with ID: ", uid);
+    return uid; // Return the UID as confirmation
   } catch (e) {
-    console.error("Error adding document: ", e);
+    console.error("Error adding user document: ", e);
     return false;
   }
 }
 
 export const getEntries = async() => {
-	
-	var allEntries = [];
 
-	var q = query(collection(db, "entries"), orderBy('priority', 'desc'));
-	const querySnapshot = await getDocs(q);
+  var allEntries = []
+
+	const querySnapshot = await getDocs(collection(db, "entries"));
+
 	querySnapshot.forEach((doc) => {
-
-		allEntries.push({...doc.data(), id: doc.id})
+    allEntries.push({...doc.data(), id: doc.id})
 	});
-
-	console.log(allEntries);
-	return allEntries
-	 
-	}
+  return allEntries
+}

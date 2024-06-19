@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, SafeAreaView } from 'react-native'
+import { StyleSheet, View, TextInput, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import { SvgXml } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import { handleLogin } from '../services/authService'
@@ -53,42 +53,46 @@ function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} >
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
 
-        <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
+            <SvgXml xml={BACKGROUND_SVG} style={styles.backgroundLogo} />
 
-        <View style={styles.content}>
-          <SvgXml xml={LOGO_SVG} />
+            <View style={styles.content}>
+              <SvgXml xml={LOGO_SVG} />
 
-          <GlobalText style={styles.title}>LOGIN</GlobalText>
+              <GlobalText style={styles.title}>LOGIN</GlobalText>
 
-          <GlobalText style={styles.label}>Email</GlobalText>
+              <GlobalText style={styles.label}>Email</GlobalText>
 
-          <TextInput
-            style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
-            placeholder="Email"
-            placeholderTextColor="#848484"
-            onChangeText={newText => setEmail(newText)}
-            defaultValue={email}
-          />
+              <TextInput
+                style={[isActiveEmail ? styles.textFieldActive : styles.textField, styles.mb20]} onFocus={() => setActiveEmail(true)} onBlur={() => setActiveEmail(false)}
+                placeholder="Email"
+                placeholderTextColor="#848484"
+                onChangeText={newText => setEmail(newText)}
+                defaultValue={email}
+              />
 
-          <GlobalText style={styles.label}>Password</GlobalText>
+              <GlobalText style={styles.label}>Password</GlobalText>
 
-          <TextInput
-            style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb10]} onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
-            placeholder="Password"
-            placeholderTextColor="#848484"
-            onChangeText={newText => setPassword(newText)}
-            defaultValue={password}
-            secureTextEntry={true}
-          />
-          <GlobalText style={styles.forgotPassword}>Forgot Password</GlobalText>
+              <TextInput
+                style={[isActivePassword ? styles.textFieldActive : styles.textField, styles.mb10]} onFocus={() => setActivePassword(true)} onBlur={() => setActivePassword(false)}
+                placeholder="Password"
+                placeholderTextColor="#848484"
+                onChangeText={newText => setPassword(newText)}
+                defaultValue={password}
+                secureTextEntry={true}
+              />
+              <GlobalText style={styles.forgotPassword}>Forgot Password</GlobalText>
 
-          <GlobalButton className="primary" buttonText="Login" onPress={login} style={styles.mb20} />
-          <GlobalButton className="secondary" buttonText="Register" onPress={navigateToRegister} />
-        </View>
+              <GlobalButton className="primary" buttonText="Login" onPress={login} style={styles.mb20} />
+              <GlobalButton className="secondary" buttonText="Register" onPress={navigateToRegister} />
+            </View>
 
-      </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
 
   )
@@ -109,6 +113,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   content: {
     flex: 1,

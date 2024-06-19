@@ -11,6 +11,7 @@ import NotificationScreen from './NotificationScreen';
 // Components
 import EntryCard from '../components/EntryCard';
 import { getEntries } from '../services/DbService';
+import EntriesList from '../components/EntriesList';
 
 function HomeScreen() {
 
@@ -62,18 +63,9 @@ function HomeScreen() {
   return (
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.container}>
-
-        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-
-          <View style={styles.content}>
-            <EntryCard />
-            <EntryCard />
-            <EntryCard />
-            <EntryCard />
-          </View>
-
-        </ScrollView>
-
+        <View style={styles.content}>
+          <EntriesList />
+        </View>
       </View>
     </SafeAreaView>
   )

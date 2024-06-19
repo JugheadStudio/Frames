@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, TextInput, Button, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, SafeAreaView, TextInput, Button, TouchableOpacity, Image, KeyboardAvoidingView, Platform } from 'react-native'
 import GlobalText from '../components/GlobalText';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -9,10 +9,10 @@ import theme from '../theme'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SvgXml } from 'react-native-svg';
 
-import { auth, firestore } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import GlobalButton from '../components/GlobalButton';
 import { createNewEntry } from '../services/DbService'
-import { serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp } from "firebase/firestore";
 
 const IMAGE_SVG = `
 <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,27 +27,40 @@ function NewEntryScreen({ navigation }){
   const [photoTitle, setPhotoTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const [username, setUsername] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
   
   const [isActivePhotoTitle, setActivephotoTitle] = useState(false);
   const [isActiveDescription, setActiveDescription] = useState(false);
 
   const submit = async () => {
 
-    // Prepare data for Firestore
     const entry = {
       photoTitle,
       description,
       imageUrl: '',
       timestamp: serverTimestamp(),
       likes: 0,
-      postedBy: auth.currentUser ? auth.currentUser.uid : 'anonymous',
+      userID: auth.currentUser ? auth.currentUser.uid : 'anonymous',
     };
 
     try {
-      // Upload image first, if available
       if (image) {
-        const imageUrl = await handleUploadOfImage(image, photoTitle); // Assuming handleUploadOfImage returns the image URL
+        const imageUrl = await handleUploadOfImage(image, photoTitle);
         entry.imageUrl = imageUrl;
+      }
+
+      // Fetch user details from Firestore
+      if (auth.currentUser) {
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          entry.username = userData.username;
+          entry.profilePicture = userData.profilePicture;
+        } else {
+          console.log('No user data found in Firestore for UID:', auth.currentUser.uid);
+        }
       }
 
       // Add entry to Firestore
@@ -85,54 +98,56 @@ function NewEntryScreen({ navigation }){
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}>
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
-        <View style={styles.imageContainer}>
-          <View style={styles.imageUploadContainer}>
-            <TouchableOpacity onPress={pickImage} style={styles.touchableContainer}>
-              {image ? (
-                <Image source={{ uri: image }} style={styles.image} />
-              ) : (
-                <>
-                  <SvgXml xml={IMAGE_SVG} />
-                  <GlobalText style={{ color: theme.colors.text2, marginTop: 15 }}>Upload Photo</GlobalText>
-                </>
-              )}
-            </TouchableOpacity>
+          <View style={styles.imageContainer}>
+            <View style={styles.imageUploadContainer}>
+              <TouchableOpacity onPress={pickImage} style={styles.touchableContainer}>
+                {image ? (
+                  <Image source={{ uri: image }} style={styles.image} />
+                ) : (
+                  <>
+                    <SvgXml xml={IMAGE_SVG} />
+                    <GlobalText style={{ color: theme.colors.text2, marginTop: 15 }}>Upload Photo</GlobalText>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.container}>
-          <GlobalText style={styles.label}>Title</GlobalText>
-          <TextInput
-            style={[isActivePhotoTitle ? styles.textFieldActive : styles.textField, styles.mb20]}
-            onFocus={() => setActivephotoTitle(true)}
-            onBlur={() => setActivephotoTitle(false)}
-            placeholder="Add a title..."
-            placeholderTextColor="#848484"
-            onChangeText={newText => setPhotoTitle(newText)}
-            value={photoTitle}
-            maxLength={30}
-          />
+          <View style={styles.container}>
+            <GlobalText style={styles.label}>Title</GlobalText>
+            <TextInput
+              style={[isActivePhotoTitle ? styles.textFieldActive : styles.textField, styles.mb20]}
+              onFocus={() => setActivephotoTitle(true)}
+              onBlur={() => setActivephotoTitle(false)}
+              placeholder="Add a title..."
+              placeholderTextColor="#848484"
+              onChangeText={newText => setPhotoTitle(newText)}
+              value={photoTitle}
+              maxLength={30}
+            />
 
-          <GlobalText style={styles.label}>Description</GlobalText>
-          <TextInput
-            multiline
-            style={[isActiveDescription ? styles.textFieldActive : styles.textField, styles.mb20, styles.descriptionInput]}
-            onFocus={() => setActiveDescription(true)}
-            onBlur={() => setActiveDescription(false)}
-            placeholder="Write a caption..."
-            placeholderTextColor="#848484"
-            onChangeText={newText => setDescription(newText)}
-            value={description}
-            numberOfLines={4}
-            maxLength={200}
-          />
+            <GlobalText style={styles.label}>Description</GlobalText>
+            <TextInput
+              multiline
+              style={[isActiveDescription ? styles.textFieldActive : styles.textField, styles.mb20, styles.descriptionInput]}
+              onFocus={() => setActiveDescription(true)}
+              onBlur={() => setActiveDescription(false)}
+              placeholder="Write a caption..."
+              placeholderTextColor="#848484"
+              onChangeText={newText => setDescription(newText)}
+              value={description}
+              numberOfLines={4}
+              maxLength={200}
+            />
 
-          <GlobalButton className="primary" buttonText="Submit" style={{ marginBottom: 20 }} onPress={submit} />
-        </View>
+            <GlobalButton className="primary" buttonText="Submit" style={{ marginBottom: 20 }} onPress={submit} />
+          </View>
 
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
