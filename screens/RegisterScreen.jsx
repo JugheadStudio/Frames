@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { StyleSheet, View, TextInput, ScrollView, SafeAreaView } from 'react-native'
 import { SvgXml } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
-import {handleRegister} from '../services/authService'
+import {registerUser} from '../services/authService'
 
 import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
@@ -48,7 +48,7 @@ function LoginScreen() {
   };
 
   const register = () => {
-    handleRegister(email, password);
+    registerUser(email, password, username);
     setUsername('');
     setEmail('');
     setPassword('');

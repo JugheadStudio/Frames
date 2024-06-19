@@ -22,7 +22,7 @@ const IMAGE_SVG = `
 </svg>
 `;
 
-function NewEntryScreen(){
+function NewEntryScreen({ navigation }){
 
   const [photoTitle, setPhotoTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -38,7 +38,9 @@ function NewEntryScreen(){
       photoTitle,
       description,
       imageUrl: '',
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
+      likes: 0,
+      postedBy: auth.currentUser ? auth.currentUser.uid : 'anonymous',
     };
 
     try {

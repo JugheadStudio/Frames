@@ -14,20 +14,15 @@ export const createNewEntry = async (entry) => {
 
 }
 
-export const createNewUser = async () => {
-
-	try {
-	  const docRef = await addDoc(collection(db, "users"), {
-      first: 'Ruan',
-      last: 'Jordaan',
-      username: 'sway',
-    });
-		console.log("Document written with ID: ", docRef.id);
-	} catch (e) {
-		console.error("Error adding document: ", e);
-		return false
-	}
-
+export const createNewUser = async (user) => {
+  try {
+    const docRef = await addDoc(collection(db, "users"), user);
+    console.log("Document written with ID: ", docRef.id);
+    return docRef.id;  // Return the document ID of the created user
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    return false;
+  }
 }
 
 export const getEntries = async() => {
