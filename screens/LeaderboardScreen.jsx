@@ -1,31 +1,8 @@
 import { StyleSheet, View, Text, ScrollView, SafeAreaView  } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useTheme } from '../ThemeProvider';
 import GlobalText from '../components/GlobalText';
 
-import {handleSignOut} from '../services/authService';
-import { auth } from '../config/firebase';
-
-function NotificationScreen(){
-  
-  const [userEmail, setUserEmail] = useState(null);
-
-  const theme = useTheme();
-  
-  const handleLogout = () => {
-    handleSignOut()
-  }
-
-  const fetchUserEmail = () => {
-    const user = auth.currentUser; // Get the current user
-    if (user) {
-        setUserEmail(user.email); // Set user email in state
-    }
-  }
-
-  useEffect(() => {
-    fetchUserEmail();
-  }, []);
+function LeaderboardScreen(){
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -34,7 +11,7 @@ function NotificationScreen(){
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
 
           <View style={styles.content}>
-            <GlobalText>Notifications</GlobalText>
+            <GlobalText>Leaderboard</GlobalText>
           </View>
 
         </ScrollView>
@@ -44,7 +21,7 @@ function NotificationScreen(){
   )
 }
 
-export default NotificationScreen
+export default LeaderboardScreen
 
 const styles = StyleSheet.create({
   mb20: {

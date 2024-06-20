@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import theme from '../theme';
@@ -16,6 +16,7 @@ function EntryCard({ entryId, userID, username, profilePicture, imageUrl, likes 
   const [currentLikes, setCurrentLikes] = useState(likes);
   const [postUsername, setPostUsername] = useState(username);
   const [postProfilePicture, setPostProfilePicture] = useState(profilePicture);
+  const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
     setCurrentLikes(likes);
@@ -41,6 +42,10 @@ function EntryCard({ entryId, userID, username, profilePicture, imageUrl, likes 
       console.error('Error fetching user details:', error);
     }
   };
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
   
   return (
     <View style={styles.container}>
@@ -54,7 +59,8 @@ function EntryCard({ entryId, userID, username, profilePicture, imageUrl, likes 
       </View>
 
       <View style={styles.imageContainer}>
-        <Image source={{ uri: imageUrl }} style={styles.image}/>
+        {imageLoading && <ActivityIndicator size="large" color="#ffffff" style={styles.imageLoader}/>}
+        <Image source={{ uri: imageUrl }} style={styles.image} onLoad={handleImageLoad}/>
       </View>
 
       <View style={[styles.dflex, styles.likeTab]}>
@@ -109,6 +115,11 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
+  },
+  imageLoader: {
+    width: '100%',
+    aspectRatio: 1,
+    resizeMode: 'cover'
   },
   image: {
     width: '100%',

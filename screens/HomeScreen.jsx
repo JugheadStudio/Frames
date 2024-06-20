@@ -5,9 +5,6 @@ import React, { useEffect, useState } from 'react'
 import { auth } from '../config/firebase';
 import theme from '../theme';
 
-// Screens
-import NotificationScreen from './NotificationScreen';
-
 // Components
 import { getEntries } from '../services/DbService';
 import EntriesList from '../components/EntriesList';

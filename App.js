@@ -15,9 +15,10 @@ import { ThemeProvider } from "./ThemeProvider";
 import { SvgXml } from "react-native-svg";
 
 // Screens ----------------------------------
-import NotificationScreen from "./screens/NotificationScreen";
+import LeaderboardScreen from "./screens/LeaderboardScreen";
 import NewEntryScreen from "./screens/NewEntryScreen";
-import SearchScreen from "./screens/SearchScreen";
+import CurrentCompScreen from "./screens/CurrentCompScreen";
+import PastCompScreen from "./screens/PastCompScreen";
 
 import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
@@ -124,7 +125,7 @@ function HomeTopTabs() {
   );
 }
 
-function ProfileTopTabs() {
+function CompetitionTopTabs() {
   return (
     <TopTab.Navigator
       initialRouteName="Entries"
@@ -151,12 +152,12 @@ function ProfileTopTabs() {
           height: 2,
         },
         tabBarIndicatorContainerStyle: {
-          marginHorizontal: 113,
+          marginHorizontal: 139,
         },
       }}
     >
-      <TopTab.Screen name="My Profile" component={ProfileScreen} options={{ tabBarLabel: "My Profile" }} />
-      <TopTab.Screen name="Settings" component={SettingsScreen} options={{ tabBarLabel: "Settings" }} />
+      <TopTab.Screen name="Current" component={CurrentCompScreen} options={{ tabBarLabel: "Current" }} />
+      <TopTab.Screen name="Past" component={PastCompScreen} options={{ tabBarLabel: "Past" }} />
     </TopTab.Navigator>
   );
 }
@@ -248,11 +249,11 @@ export default function App() {
                       } else if (route.name === "Add") {
                         iconName = focused ? "add-circle" : "add-circle";
                         size = 35;
-                      } else if (route.name === "Notifications") {
-                        iconName = focused ? "notifications" : "notifications-outline";
+                      } else if (route.name === "Leaderboard") {
+                        iconName = focused ? "podium" : "podium-outline";
                         size = 28;
-                      } else if (route.name === "Search") {
-                        iconName = focused ? "search" : "search-outline";
+                      } else if (route.name === "Competition") {
+                        iconName = focused ? "trophy" : "trophy-outline";
                         size = 28;
                       }
 
@@ -264,10 +265,10 @@ export default function App() {
                   })}
                 >
                   <Tab.Screen name="Home" component={HomeTopTabs} options={{ headerShown: false }} />
-                  <Tab.Screen name="Search" component={SearchScreen} options={{ headerShown: false }} />
+                  <Tab.Screen name="Competition" component={CompetitionTopTabs} options={{ headerShown: false }} />
                   <Tab.Screen name="Add" component={NewEntryScreen} options={{ headerShown: false }} />
-                  <Tab.Screen name="Notifications" component={NotificationScreen} options={{ headerShown: false }} />
-                  <Tab.Screen name="Profile" component={ProfileTopTabs} options={{ headerShown: false }} />
+                  <Tab.Screen name="Leaderboard" component={LeaderboardScreen} options={{ headerShown: false }} />
+                  <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
                 </Tab.Navigator>
               </>
             )}

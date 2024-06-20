@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, TextInput, Button, TouchableOpacity, Image, KeyboardAvoidingView, Platform } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, SafeAreaView, TextInput, Button, TouchableOpacity, Image, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native'
 import GlobalText from '../components/GlobalText';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -27,13 +27,14 @@ function NewEntryScreen({ navigation }){
   const [photoTitle, setPhotoTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
-  const [username, setUsername] = useState('');
-  const [profilePicture, setProfilePicture] = useState('');
+  const [loading, setLoading] = useState(false);
   
   const [isActivePhotoTitle, setActivephotoTitle] = useState(false);
   const [isActiveDescription, setActiveDescription] = useState(false);
 
   const submit = async () => {
+
+    setLoading(true);
 
     const entry = {
       photoTitle,
@@ -75,7 +76,8 @@ function NewEntryScreen({ navigation }){
       navigation.goBack();
     } catch (error) {
       console.error('Error submitting entry:', error);
-      // Handle error
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,7 +106,11 @@ function NewEntryScreen({ navigation }){
           <View style={styles.imageContainer}>
             <View style={styles.imageUploadContainer}>
               <TouchableOpacity onPress={pickImage} style={styles.touchableContainer}>
-                {image ? (
+                {loading ? (
+                  <>
+                    <ActivityIndicator size="large" color="#ffffff" />
+                  </>
+                ) : image ? (
                   <Image source={{ uri: image }} style={styles.image} />
                 ) : (
                   <>

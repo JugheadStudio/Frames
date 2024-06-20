@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView, SafeAreaView, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, ScrollView, SafeAreaView, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import GlobalText from '../components/GlobalText';
 import GlobalButton from '../components/GlobalButton';
@@ -14,6 +14,7 @@ import { doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 function ProfileScreen({ route, navigation }) {
   const [username, setUsername] = useState(null);
   const [profilePic, setProfilePic] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleLogout = () => {
     handleSignOut();
@@ -34,6 +35,7 @@ function ProfileScreen({ route, navigation }) {
   };
 
   const pickImage = async () => {
+    setLoading(true);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -52,12 +54,16 @@ function ProfileScreen({ route, navigation }) {
           await updateProfilePicture(imageUrl); // Update Firestore
         } catch (error) {
           console.error("Failed to upload image and update profile:", error);
+        } finally {
+          setLoading(false); // End loading
         }
       } else {
         console.error("No URI found in the image result");
+        setLoading(false); // End loading
       }
     } else {
       console.error("Image picking was canceled or no assets found");
+      setLoading(false); // End loading
     }
   };
 
@@ -85,7 +91,11 @@ function ProfileScreen({ route, navigation }) {
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.profileContainer}>
             <TouchableOpacity style={styles.imageWrapper} onPress={pickImage}>
-              <Image source={{ uri: profilePic }} style={styles.image} />
+              {loading ? (
+                <ActivityIndicator size="large" color="#ffffff" />
+              ) : (
+                <Image source={{ uri: profilePic }} style={styles.image} />
+              )}
             </TouchableOpacity>
             <View style={styles.profileDetails}>
               <GlobalText style={styles.username}>{username}</GlobalText>
