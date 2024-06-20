@@ -267,7 +267,7 @@ export default function App() {
                   <Tab.Screen name="Home" component={HomeTopTabs} options={{ headerShown: false }} />
                   <Tab.Screen name="Competition" component={CompetitionTopTabs} options={{ headerShown: false }} />
                   <Tab.Screen name="Add" component={NewEntryScreen} options={{ headerShown: false }} />
-                  <Tab.Screen name="Leaderboard" component={LeaderboardScreen} options={{ headerShown: false }} />
+                  <Tab.Screen name="Leaderboard" component={LeaderboardScreen} options={{ headerShown: true }} />
                   <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
                 </Tab.Navigator>
               </>
