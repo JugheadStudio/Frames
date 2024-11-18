@@ -4,7 +4,7 @@ import GlobalText from "../components/GlobalText";
 import theme from "../theme";
 
 function CurrentCompScreen() {
-  const deadline = new Date('2024-06-20T15:53:32.697Z');
+  const deadline = new Date('2024-11-28T15:53:32.697Z');
   deadline.setDate(deadline.getDate() + 7);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
